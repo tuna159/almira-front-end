@@ -81,14 +81,14 @@ flutter:
         - asset: fonts/BMDANIEL-Bold.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
-    - family: MemphisBold
+    - family: OpenSanssBold
       fonts:
-        - asset: fonts/Memphis-Bold.ttf
+        - asset: fonts/OpenSans-Bold.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-    - family: MemphisMedium
+    - family: OpenSansMedium
       fonts:
-        - asset: fonts/Memphis-Medium.ttf
+        - asset: fonts/OpenSans-Medium.ttf
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

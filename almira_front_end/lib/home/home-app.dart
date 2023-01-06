@@ -19,7 +19,7 @@ class _HomeAppState extends State<HomeApp> {
           return Center(
             child: Text(
               'Item $index',
-              style: utils.getProgressBoldStyle(),
+              style: utils.getProgressMediumStyle(),
             ),
           );
         },
