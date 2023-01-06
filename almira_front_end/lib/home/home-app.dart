@@ -36,6 +36,24 @@ class _HomeAppState extends State<HomeApp> {
         title: const Text('Almira'),
         backgroundColor: utils.defaulColor,
         titleTextStyle: utils.getProgressHeaderStyle(),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.search),
+            tooltip: 'Show Snackbar',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('This is a snackbar')));
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            tooltip: 'Show Snackbar',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('This is a snackbar')));
+            },
+          ),
+        ],
       ),
       body: _listViewBody(),
       bottomNavigationBar: BottomNavigationBar(
