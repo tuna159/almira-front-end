@@ -45,8 +45,14 @@ class _HomeAppState extends State<HomeApp> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.open_in_new_rounded),
-            label: 'Open Dialog',
+            icon: Icon(
+              Icons.message_outlined,
+            ),
+            label: 'Message',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Setting',
           ),
         ],
         selectedLabelStyle: utils.getProgressBoldStyle(),
