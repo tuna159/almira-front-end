@@ -6,6 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:almira_front_end/home/home-app.dart';
+import 'package:almira_front_end/welcome-app/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,7 +15,7 @@ import 'package:almira_front_end/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const HomeApp());
+    await tester.pumpWidget(const Welcome());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

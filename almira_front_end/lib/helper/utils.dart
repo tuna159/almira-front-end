@@ -5,7 +5,7 @@ TextStyle getProgressBoldStyle() {
 }
 
 TextStyle getProgressHeaderStyle() {
-  return const TextStyle(fontSize: 30, fontFamily: 'BMDANIEL');
+  return const TextStyle(fontSize: 32, fontFamily: 'BMDANIEL');
 }
 
 TextStyle getProgressMediumStyle() {
@@ -13,3 +13,4 @@ TextStyle getProgressMediumStyle() {
 }
 
 Color defaulColor = const Color.fromARGB(255, 4, 191, 182);
+Color backgroundColor = const Color.fromARGB(255, 115, 217, 217);

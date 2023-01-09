@@ -1,0 +1,122 @@
+import 'package:flutter/material.dart';
+import 'package:almira_front_end/helper/utils.dart' as utils;
+
+class Welcome extends StatefulWidget {
+  const Welcome({super.key});
+
+  @override
+  State<Welcome> createState() => _WelcomeState();
+}
+
+class _WelcomeState extends State<Welcome> {
+  @override
+  Widget build(Object context) {
+    return Scaffold(
+        backgroundColor: utils.backgroundColor,
+        body: Container(
+          child: Stack(
+            children: <Widget>[
+              const Positioned(
+                top: 300,
+                left: -176,
+                height: 750,
+                width: 750,
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+              const Positioned(
+                top: 120,
+                left: 74,
+                height: 250,
+                width: 250,
+                child: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage('images/background.png')),
+              ),
+              Positioned(
+                bottom: 210,
+                left: 75,
+                child: Container(
+                  height: MediaQuery.of(this.context).size.height * 40,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('Almira  ', style: utils.getProgressHeaderStyle()),
+                      const Text('A place for dogs and cats',
+                          style: TextStyle(
+                              fontSize: 22, fontFamily: 'OpenSansMedium')),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        width: 100,
+                        child: LinearProgressIndicator(
+                          value: 0.95,
+                          backgroundColor:
+                              const Color(0xfffbfaff).withOpacity(0.6),
+                          valueColor: const AlwaysStoppedAnimation(
+                              Color.fromARGB(255, 0, 0, 0)),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Wrap(
+                        children: <Widget>[
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black.withOpacity(0.6),
+                              minimumSize: const Size(120, 40),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            onPressed: () {},
+                            child: const Text(
+                              'Sign in',
+                              style: TextStyle(
+                                fontFamily: 'OpenSansMedium',
+                                fontSize: 22,
+                                color: Color(0xffffffff),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black.withOpacity(0.6),
+                              minimumSize: const Size(120, 40),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            onPressed: () {},
+                            child: const Text(
+                              'Register',
+                              style: TextStyle(
+                                fontFamily: 'OpenSansMedium',
+                                fontSize: 22,
+                                color: Color(0xffffffff),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
+}
