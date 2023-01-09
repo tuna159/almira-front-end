@@ -36,7 +36,7 @@ class _WelcomeState extends State<Welcome> {
                     backgroundImage: AssetImage('images/background.png')),
               ),
               Positioned(
-                bottom: 210,
+                bottom: 220,
                 left: 75,
                 child: Container(
                   height: MediaQuery.of(this.context).size.height * 40,
