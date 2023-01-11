@@ -1,3 +1,4 @@
+import 'package:almira_front_end/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/helper/utils.dart' as utils;
 
@@ -140,13 +141,14 @@ class _SignUpState extends State<SignUp> {
                     ),
                     TextButton(
                       child: const Text(
-                        'Sign in',
+                        'Register',
                         style: TextStyle(
                             fontSize: 18,
                             fontFamily: 'OpenSansMedium',
                             color: Color.fromARGB(255, 4, 191, 182)),
                       ),
                       onPressed: () {
+                        Navigator.pushNamed(context, RouteNames.Register);
                         //signup screen
                       },
                     )
