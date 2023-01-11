@@ -78,10 +78,10 @@ class _WelcomeState extends State<Welcome> {
                             ),
                             onPressed: () {
                               Navigator.pushNamed(
-                                  this.context, RouteNames.SignUp);
+                                  this.context, RouteNames.Login);
                             },
                             child: const Text(
-                              'Sign in',
+                              'Login',
                               style: TextStyle(
                                 fontFamily: 'OpenSansMedium',
                                 fontSize: 22,
@@ -103,10 +103,10 @@ class _WelcomeState extends State<Welcome> {
                             ),
                             onPressed: () {
                               Navigator.pushNamed(
-                                  this.context, RouteNames.Register);
+                                  this.context, RouteNames.SignUp);
                             },
                             child: const Text(
-                              'Register',
+                              'Sign up',
                               style: TextStyle(
                                 fontFamily: 'OpenSansMedium',
                                 fontSize: 22,

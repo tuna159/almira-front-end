@@ -17,3 +17,10 @@ Color defaulColor = const Color.fromARGB(255, 4, 191, 182);
 Color backgroundColor = const Color.fromARGB(255, 115, 217, 217);
 
 Color bColor = Color.fromARGB(255, 255, 255, 255);
+
+String? requiredField(String? valueEx) {
+  if (valueEx == null || valueEx.isEmpty) {
+    return 'This field can not be empty';
+  }
+  return null;
+}
