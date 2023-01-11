@@ -1,3 +1,4 @@
+import 'package:almira_front_end/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/helper/utils.dart' as utils;
 
@@ -75,7 +76,10 @@ class _WelcomeState extends State<Welcome> {
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  this.context, RouteNames.SignUp);
+                            },
                             child: const Text(
                               'Sign in',
                               style: TextStyle(
@@ -97,7 +101,10 @@ class _WelcomeState extends State<Welcome> {
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  this.context, RouteNames.Register);
+                            },
                             child: const Text(
                               'Register',
                               style: TextStyle(

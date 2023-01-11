@@ -13,4 +13,7 @@ TextStyle getProgressMediumStyle() {
 }
 
 Color defaulColor = const Color.fromARGB(255, 4, 191, 182);
+
 Color backgroundColor = const Color.fromARGB(255, 115, 217, 217);
+
+Color bColor = Color.fromARGB(255, 255, 255, 255);
