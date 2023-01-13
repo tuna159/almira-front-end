@@ -146,7 +146,7 @@ class _SignUpState extends State<SignUp> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const Text(
-                    'Does  have account?',
+                    'Does have account?',
                     style:
                         TextStyle(fontSize: 14, fontFamily: 'OpenSansMedium'),
                   ),
