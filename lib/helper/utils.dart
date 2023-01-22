@@ -18,9 +18,30 @@ Color backgroundColor = const Color.fromARGB(255, 115, 217, 217);
 
 Color bColor = Color.fromARGB(255, 255, 255, 255);
 
-String? requiredField(String? valueEx) {
-  if (valueEx == null || valueEx.isEmpty) {
-    return 'This field can not be empty';
+String? requiredFieldEmail(String? valueEm) {
+  if (valueEm == null || valueEm.isEmpty) {
+    return 'This field email can not be empty';
+  }
+  return null;
+}
+
+String? requiredFieldPhoneNumber(String? valuePn) {
+  if (valuePn == null || valuePn.isEmpty) {
+    return 'This field phone number can not be empty';
+  }
+  return null;
+}
+
+String? requiredFieldUserName(String? valueUn) {
+  if (valueUn == null || valueUn.isEmpty) {
+    return 'This field user name can not be empty';
+  }
+  return null;
+}
+
+String? requiredFieldPassword(String? valueP) {
+  if (valueP == null || valueP.isEmpty) {
+    return 'This field password can not be empty';
   }
   return null;
 }
