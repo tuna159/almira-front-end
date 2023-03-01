@@ -1,8 +1,8 @@
-import 'package:almira_front_end/home/home-app.dart';
+import 'package:almira_front_end/screens/home/home-app.dart';
 import 'package:almira_front_end/routes/routes.dart';
-import 'package:almira_front_end/welcome-app/login.dart';
-import 'package:almira_front_end/welcome-app/sign-up.dart';
-import 'package:almira_front_end/welcome-app/welcome.dart';
+import 'package:almira_front_end/screens/welcome-app/login.dart';
+import 'package:almira_front_end/screens/welcome-app/sign-up.dart';
+import 'package:almira_front_end/screens/welcome-app/welcome.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const ApplicationNetWork());
