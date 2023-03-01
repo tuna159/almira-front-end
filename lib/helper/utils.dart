@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 TextStyle getProgressBoldStyle() {
   return const TextStyle(fontSize: 12, fontFamily: 'OpenSanssBold');
@@ -44,4 +45,16 @@ String? requiredFieldPassword(String? valueP) {
     return 'This field password can not be empty';
   }
   return null;
+}
+
+class UtilSharedPreferences {
+  static Future<String> getToken() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    return _prefs.getString('token') ?? '';
+  }
+
+  static Future setToken(String value) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    return _prefs.setString('token', value);
+  }
 }

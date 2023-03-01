@@ -163,27 +163,5 @@ class _LoginState extends State<Login> {
             .showSnackBar(SnackBar(content: Text(error.toString())));
       });
     }
-
-    // @override
-    // // ignore: unused_element
-    // void dispose() {
-    //   userNameController.dispose();
-    //   passwordController.dispose();
-
-    //   super.dispose();
-    // }
-
-    //   UserData user = UserData()
-
-    //    _apiUserService.loginOTP(profile).then((isSuccess) {
-    //                         setState(() => _isLoading = false);
-    //                         if (isSuccess) {
-    //                           Navigator.pop(_scaffoldState.currentState.context, true);
-    //                         } else {
-    //                           _scaffoldState.currentState.showSnackBar(SnackBar(
-    //                             content: Text("Submit data failed"),
-    //                           ));
-    //                         }
-    //                       });
   }
 }

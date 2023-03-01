@@ -1,11 +1,15 @@
 import 'dart:convert';
 
+import 'package:almira_front_end/helper/utils.dart';
 import 'package:almira_front_end/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiUserService {
-  final String baseUrl = "http://192.168.1.146:3009";
+  final String baseUrl = "http://192.168.1.59:3009";
+
+  var token = "";
 
   Future<void> loginOTP(String username, String password) async {
     Map<String, String> headers = {
@@ -22,7 +26,9 @@ class ApiUserService {
     );
     var responseBody = jsonDecode(response.body);
     if (responseBody['status_code'] == 200) {
-      print(UserData.fromJson(responseBody));
+      Map<String, dynamic> data = responseBody;
+      String token = data["data"]["token"];
+      UtilSharedPreferences.setToken(token);
       UserData.fromJson(responseBody);
     } else {
       throw responseBody["error_message"];

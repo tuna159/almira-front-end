@@ -20,7 +20,7 @@ class ApplicationNetWork extends StatelessWidget {
         RouteNames.SignUp: (context) => const SignUp(),
       },
       debugShowCheckedModeBanner: false,
-      initialRoute: RouteNames.Welcome,
+      initialRoute: RouteNames.Login,
       // home: Welcome(),
     );
   }
