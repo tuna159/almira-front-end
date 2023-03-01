@@ -3,7 +3,6 @@ import 'package:almira_front_end/routes/routes.dart';
 import 'package:almira_front_end/widgets/like_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/helper/utils.dart' as utils;
-import 'package:intl/intl.dart';
 
 class HomeApp extends StatefulWidget {
   const HomeApp({super.key});
