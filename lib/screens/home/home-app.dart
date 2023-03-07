@@ -1,8 +1,11 @@
-import 'package:almira_front_end/api/api-post/api-post-service.dart';
+import 'package:almira_front_end/api/api-post-service.dart';
+import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/routes/routes.dart';
 import 'package:almira_front_end/widgets/like_animation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:almira_front_end/helper/utils.dart' as utils;
+import 'package:almira_front_end/utils/utils.dart' as utils;
+import 'package:http/http.dart';
 
 class HomeApp extends StatefulWidget {
   const HomeApp({super.key});
@@ -13,53 +16,90 @@ class HomeApp extends StatefulWidget {
 
 class _HomeAppState extends State<HomeApp> {
   bool isLikeAnimating = false;
+  bool isLoading = true;
 
   late List listOfDataImage;
   late Future futurePost;
+  late List listPostLike;
+  late List listPost;
   late int id;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      futurePost = ApiPostService().getPost();
-    });
+    futurePost = ApiPostService().getPost();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Almira'),
-          automaticallyImplyLeading: false,
-          backgroundColor: utils.defaulColor,
-          titleTextStyle: utils.getProgressHeaderStyle(),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.messenger_outline_sharp),
-              tooltip: 'Show Snackbar',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('This is a snackbar')));
-              },
-            ),
-          ],
-        ),
-        body: Center(
-          child: FutureBuilder(
-            future: futurePost,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Text("Something went wrong! ${snapshot}");
-              } else if (snapshot.hasData) {
-                final posts = snapshot.data!["data"];
-                return buildListView(posts);
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
+      appBar: AppBar(
+        title: const Text('Almira'),
+        automaticallyImplyLeading: false,
+        backgroundColor: utils.defaulColor,
+        titleTextStyle: utils.getProgressHeaderStyle(),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.messenger_outline_sharp),
+            tooltip: 'Show Snackbar',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('This is a snackbar')));
             },
           ),
-        ));
+        ],
+      ),
+      body: Center(
+        child: FutureBuilder(
+          future: futurePost,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text("Something went wrong! ${snapshot}");
+            } else if (snapshot.hasData) {
+              final posts = snapshot.data!;
+              return buildListView(posts);
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
+      ),
+      bottomNavigationBar: CupertinoTabBar(
+        backgroundColor: utils.bColor,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.search,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.add_circle,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.favorite,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+            ),
+            label: '',
+          ),
+        ],
+      ),
+    );
   }
 
   void showModal(BuildContext context) {
@@ -84,6 +124,7 @@ class _HomeAppState extends State<HomeApp> {
         itemCount: listOfData.length,
         itemBuilder: (context, index) {
           final post = listOfData[index];
+          // print(post);
           listOfDataImage = post["image"];
           final postImage = listOfDataImage[0];
           return Container(
@@ -130,7 +171,7 @@ class _HomeAppState extends State<HomeApp> {
                           showDialog(
                               context: context,
                               builder: (context) => Dialog(
-                                    backgroundColor: utils.backgroundColor,
+                                    backgroundColor: Colors.white,
                                     child: ListView(
                                       padding: const EdgeInsets.symmetric(
                                         vertical: 16,
@@ -141,10 +182,10 @@ class _HomeAppState extends State<HomeApp> {
                                       ]
                                           .map((e) => InkWell(
                                                 onTap: () async {
-                                                  // await FirestoreMethods()
-                                                  //     .deletePost(widget
-                                                  //         .snap['postId']);
-                                                  // Navigator.pop(context);
+                                                  await ApiPostService()
+                                                      .deletePost(
+                                                          post["post_id"]);
+                                                  Navigator.pop(context);
                                                 },
                                                 child: Container(
                                                   padding: const EdgeInsets
@@ -170,7 +211,20 @@ class _HomeAppState extends State<HomeApp> {
 
                 GestureDetector(
                   onDoubleTap: () async {
-                    await ApiPostService().likePost(post["post_id"]);
+                    // await ApiPostService()
+                    //     .likePost(post["post_id"])
+                    //     .then((value) async {
+                    //   listPostLike = await ApiPostService().getPost();
+                    //   print(listPostLike[index].toString());
+                    //   setState(
+                    //     () {
+                    //       listPostLike[index];
+                    //     },
+                    //   );
+                    // }).catchError((error) {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //       SnackBar(content: Text(error.toString())));
+                    // });
                     setState(() {
                       isLikeAnimating = true;
                     });
@@ -192,11 +246,6 @@ class _HomeAppState extends State<HomeApp> {
                         ),
                         opacity: isLikeAnimating ? 1 : 0,
                         child: LikeAnimation(
-                          child: const Icon(
-                            Icons.favorite,
-                            color: Colors.white,
-                            size: 120,
-                          ),
                           isAnimating: isLikeAnimating,
                           duration: const Duration(
                             milliseconds: 400,
@@ -206,6 +255,11 @@ class _HomeAppState extends State<HomeApp> {
                               isLikeAnimating = false;
                             });
                           },
+                          child: const Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                            size: 120,
+                          ),
                         ),
                       ),
                     ],
@@ -222,7 +276,23 @@ class _HomeAppState extends State<HomeApp> {
                       smallLike: true,
                       child: IconButton(
                           onPressed: () async {
-                            await ApiPostService().likePost(post["post_id"]);
+                            await ApiPostService()
+                                .likePost(post["post_id"])
+                                .then((value) async {
+                              listPostLike = await ApiPostService().getPost();
+                              print(listPostLike[index].toString());
+                              setState(
+                                () {
+                                  listPostLike[index];
+                                },
+                              );
+                            }).catchError((error) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(error.toString())));
+                            });
+                            setState(() {
+                              isLikeAnimating = false;
+                            });
                           },
                           icon: post["is_liked"]
                               ? const Icon(
@@ -241,9 +311,8 @@ class _HomeAppState extends State<HomeApp> {
                         // Navigator.push(
                         //   context,
                         //   MaterialPageRoute(
-                        //     builder: (context) => CommentsScreen(
-                        //       snap: widget.snap,
-                        //     ),
+                        //     builder: (context) =>
+                        //         CommentsScreen(postId: post["post_id"]),
                         //   ),
                         // );
                       },

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:almira_front_end/api/api-user/api-user-service.dart';
+import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/model/user.dart';
 import 'package:almira_front_end/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:almira_front_end/helper/utils.dart' as utils;
+import 'package:almira_front_end/utils/utils.dart' as utils;
 
 import 'package:http/http.dart' as http;
 
@@ -157,7 +157,7 @@ class _LoginState extends State<Login> {
       String password = passwordController.text;
 
       _apiUserService.loginOTP(userName, password).then((user) {
-        Navigator.pushNamed(context, RouteNames.HomeApp);
+        Navigator.pushNamed(context, RouteNames.FeedScreen);
       }).catchError((error) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(error.toString())));

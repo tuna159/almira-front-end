@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:almira_front_end/helper/utils.dart';
+import 'package:almira_front_end/utils/utils.dart';
 import 'package:almira_front_end/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;

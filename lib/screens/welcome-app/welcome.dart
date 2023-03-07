@@ -1,6 +1,6 @@
 import 'package:almira_front_end/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:almira_front_end/helper/utils.dart' as utils;
+import 'package:almira_front_end/utils/utils.dart' as utils;
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});

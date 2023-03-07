@@ -3,13 +3,13 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:almira_front_end/api/api-user/api-user-service.dart';
+import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/model/user.dart';
 import 'package:almira_front_end/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:almira_front_end/helper/utils.dart' as utils;
+import 'package:almira_front_end/utils/utils.dart' as utils;
 
 final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
 
