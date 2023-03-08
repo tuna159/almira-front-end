@@ -27,33 +27,11 @@ class ApiPostService {
       Map<String, dynamic> data = responseBody;
       return data["data"];
     } else {
-      throw jsonDecode(response.body)["error_message"];
-    }
-  }
-
-  Future likePost(int id) async {
-    String token = await UtilSharedPreferences.getToken();
-
-    Map<String, String> headers = {
-      'Content-type': 'application/json',
-      'Accept': '*/*',
-      HttpHeaders.authorizationHeader: 'Bearer $token'
-    };
-
-    final response = await http.post(
-      Uri.parse('$baseUrl/api/v1/post/$id/likes'),
-      headers: headers,
-    );
-
-    var responseBody = jsonDecode(response.body);
-    if (responseBody['status_code'] == 200) {
-      return responseBody;
-    } else {
       throw responseBody["error_message"];
     }
   }
 
-  Future<void> likePosts(int id, bool is_liked) async {
+  Future<void> likePost(int id, bool is_liked) async {
     String token = await UtilSharedPreferences.getToken();
 
     Map<String, String> headers = {

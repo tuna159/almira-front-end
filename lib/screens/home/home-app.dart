@@ -1,6 +1,7 @@
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/routes/routes.dart';
+import 'package:almira_front_end/screens/comments_screen.dart';
 import 'package:almira_front_end/widgets/like_animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,18 +17,14 @@ class HomeApp extends StatefulWidget {
 
 class _HomeAppState extends State<HomeApp> {
   bool isLikeAnimating = false;
-  bool isLoading = true;
 
   late List listOfDataImage;
   late Future futurePost;
-  late List listPostLike;
-  late List listPost;
-  late int id;
 
   @override
   void initState() {
-    super.initState();
     futurePost = ApiPostService().getPost();
+    super.initState();
   }
 
   @override
@@ -51,15 +48,15 @@ class _HomeAppState extends State<HomeApp> {
       ),
       body: Center(
         child: FutureBuilder(
-          future: futurePost,
+          future: ApiPostService().getPost(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return Text("Something went wrong! ${snapshot}");
+              return Text("Something went wrong! $snapshot");
             } else if (snapshot.hasData) {
               final posts = snapshot.data!;
-              return buildListView(posts);
+              return buildListViewPost(posts);
             } else {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
           },
         ),
@@ -102,24 +99,24 @@ class _HomeAppState extends State<HomeApp> {
     );
   }
 
-  void showModal(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        content: const Text('Example Dialog'),
-        actions: <TextButton>[
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('Close'),
-          )
-        ],
-      ),
-    );
-  }
+  // void showModal(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) => AlertDialog(
+  //       content: const Text('Example Dialog'),
+  //       actions: <TextButton>[
+  //         TextButton(
+  //           onPressed: () {
+  //             Navigator.pop(context);
+  //           },
+  //           child: const Text('Close'),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  ListView buildListView(List listOfData) {
+  ListView buildListViewPost(List listOfData) {
     return ListView.builder(
         itemCount: listOfData.length,
         itemBuilder: (context, index) {
@@ -184,8 +181,16 @@ class _HomeAppState extends State<HomeApp> {
                                                 onTap: () async {
                                                   await ApiPostService()
                                                       .deletePost(
-                                                          post["post_id"]);
-                                                  Navigator.pop(context);
+                                                          post["post_id"])
+                                                      .then((user) {
+                                                    Navigator.pop(context);
+                                                  }).catchError((error) {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(SnackBar(
+                                                            content: Text(error
+                                                                .toString())));
+                                                  });
                                                 },
                                                 child: Container(
                                                   padding: const EdgeInsets
@@ -207,24 +212,19 @@ class _HomeAppState extends State<HomeApp> {
                     ],
                   ),
                 ),
-                // Image Section
 
+                // Image Section
                 GestureDetector(
                   onDoubleTap: () async {
-                    // await ApiPostService()
-                    //     .likePost(post["post_id"])
-                    //     .then((value) async {
-                    //   listPostLike = await ApiPostService().getPost();
-                    //   print(listPostLike[index].toString());
-                    //   setState(
-                    //     () {
-                    //       listPostLike[index];
-                    //     },
-                    //   );
-                    // }).catchError((error) {
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //       SnackBar(content: Text(error.toString())));
-                    // });
+                    await ApiPostService()
+                        .likePost(post["post_id"], post["is_liked"])
+                        .catchError((error) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(error.toString())));
+                    });
+                    setState(() {
+                      isLikeAnimating = true;
+                    });
                     setState(() {
                       isLikeAnimating = true;
                     });
@@ -257,7 +257,7 @@ class _HomeAppState extends State<HomeApp> {
                           },
                           child: const Icon(
                             Icons.favorite,
-                            color: Colors.red,
+                            color: Colors.white,
                             size: 120,
                           ),
                         ),
@@ -267,7 +267,6 @@ class _HomeAppState extends State<HomeApp> {
                 ),
 
                 // //Like Comment Section
-
                 Row(
                   children: [
                     // Like Widget
@@ -277,16 +276,8 @@ class _HomeAppState extends State<HomeApp> {
                       child: IconButton(
                           onPressed: () async {
                             await ApiPostService()
-                                .likePost(post["post_id"])
-                                .then((value) async {
-                              listPostLike = await ApiPostService().getPost();
-                              print(listPostLike[index].toString());
-                              setState(
-                                () {
-                                  listPostLike[index];
-                                },
-                              );
-                            }).catchError((error) {
+                                .likePost(post["post_id"], post["is_liked"])
+                                .catchError((error) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text(error.toString())));
                             });
@@ -308,15 +299,17 @@ class _HomeAppState extends State<HomeApp> {
                     // Comment Section
                     IconButton(
                       onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) =>
-                        //         CommentsScreen(postId: post["post_id"]),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CommentsScreen(
+                                postId: post["post_id"],
+                                avatar: post["user_data"]["user_image"]
+                                    ["image_url"]),
+                          ),
+                        );
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.comment_outlined,
                       ),
                     ),
@@ -325,7 +318,7 @@ class _HomeAppState extends State<HomeApp> {
 
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.send_outlined,
                       ),
                     ),
@@ -334,7 +327,7 @@ class _HomeAppState extends State<HomeApp> {
                         alignment: Alignment.bottomRight,
                         child: IconButton(
                           onPressed: () {},
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.bookmark_border,
                           ),
                         ),
@@ -346,7 +339,7 @@ class _HomeAppState extends State<HomeApp> {
                 // Description & Number of comments
 
                 Container(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                   ),
                   child: Column(
@@ -354,7 +347,7 @@ class _HomeAppState extends State<HomeApp> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        post["like_count"].toString() + " likes",
+                        "${post["like_count"]} likes",
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(
                               fontWeight: FontWeight.w500,
                             ),
@@ -378,7 +371,7 @@ class _HomeAppState extends State<HomeApp> {
                               ),
                               TextSpan(
                                 text: " ${post["content"]}",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -388,14 +381,16 @@ class _HomeAppState extends State<HomeApp> {
                       ),
                       InkWell(
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => CommentsScreen(
-                          //       snap: widget.snap,
-                          //     ),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CommentsScreen(
+                                postId: post["post_id"],
+                                avatar: post["user_data"]["user_image"]
+                                    ["image_url"],
+                              ),
+                            ),
+                          );
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(

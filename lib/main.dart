@@ -1,3 +1,4 @@
+import 'package:almira_front_end/screens/comments_screen.dart';
 import 'package:almira_front_end/screens/feed_screen.dart';
 import 'package:almira_front_end/screens/home/home-app.dart';
 import 'package:almira_front_end/routes/routes.dart';
@@ -21,7 +22,7 @@ class ApplicationNetWork extends StatelessWidget {
         RouteNames.HomeApp: (context) => const HomeApp(),
         RouteNames.Login: (context) => const Login(),
         RouteNames.SignUp: (context) => const SignUp(),
-        RouteNames.FeedScreen: (context) => const FeedScreen(),
+        // RouteNames.FeedScreen: (context) => const FeedScreen(),
       },
       debugShowCheckedModeBanner: false,
       initialRoute: RouteNames.Login,
