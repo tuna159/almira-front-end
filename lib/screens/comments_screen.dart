@@ -1,6 +1,5 @@
 import 'package:almira_front_end/api/api-post-comment-service.dart';
 import 'package:almira_front_end/api/api-post-service.dart';
-import 'package:almira_front_end/widgets/comment_card.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/utils/utils.dart' as utils;
 
@@ -16,10 +15,16 @@ class CommentsScreen extends StatefulWidget {
 }
 
 class _CommentsScreenState extends State<CommentsScreen> {
+  late Future futurePostComment;
   final TextEditingController commentEditingController =
       TextEditingController();
 
   late List listOfDataComments;
+  @override
+  void initState() {
+    futurePostComment = ApiPostCommentService().getPostComment(widget.postId);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +33,12 @@ class _CommentsScreenState extends State<CommentsScreen> {
         backgroundColor: utils.defaulColor,
         title: const Text(
           'Comments',
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_outlined),
+          onPressed: () {
+            Navigator.pop(context, "refresh");
+          },
         ),
         centerTitle: false,
       ),
@@ -46,7 +57,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
           },
         ),
       ),
-
       // text input
       bottomNavigationBar: SafeArea(
         child: Container(
@@ -73,7 +83,20 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () async {
+                  await ApiPostCommentService()
+                      .addCommentToPost(
+                          widget.postId, commentEditingController.text)
+                      .then((value) async {
+                    await ApiPostService().getPost();
+                  }).catchError((error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(error.toString())));
+                  });
+                  setState(() {
+                    commentEditingController.text = "";
+                  });
+                },
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -97,7 +120,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
         final comment = listOfDataComment;
 
         listOfDataComments = comment["post_comment"];
-        final commentIndex = listOfDataComments[0];
+        final commentIndex = listOfDataComments[index];
 
         return Container(
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -147,7 +170,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 child: const Icon(
-                  Icons.favorite,
+                  Icons.favorite_border,
                   size: 16,
                 ),
               )

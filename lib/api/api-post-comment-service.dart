@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiPostCommentService {
-  final String baseUrl = "http://192.168.1.59:3009";
+  final String baseUrl = "http://192.168.1.156:3009";
 
   Future getPostComment(int postId) async {
     String token = await UtilSharedPreferences.getToken();
@@ -29,7 +29,7 @@ class ApiPostCommentService {
     }
   }
 
-  Future addCommentToPost(int postId) async {
+  Future addCommentToPost(int postId, String content) async {
     String token = await UtilSharedPreferences.getToken();
 
     Map<String, String> headers = {
@@ -37,14 +37,17 @@ class ApiPostCommentService {
       'Accept': '*/*',
       HttpHeaders.authorizationHeader: 'Bearer $token'
     };
+    Map<String, String> body = {'content': content};
+
     final response = await http.post(
       Uri.parse('$baseUrl/api/v1/post/$postId/comments'),
       headers: headers,
+      body: jsonEncode(body),
     );
     var responseBody = jsonDecode(response.body);
 
     if (responseBody['status_code'] == 200) {
-      return responseBody["data"];
+      return responseBody;
     } else {
       throw responseBody["error_message"];
     }

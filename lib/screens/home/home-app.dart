@@ -182,8 +182,9 @@ class _HomeAppState extends State<HomeApp> {
                                                   await ApiPostService()
                                                       .deletePost(
                                                           post["post_id"])
-                                                      .then((user) {
+                                                      .then((e) {
                                                     Navigator.pop(context);
+                                                    setState(() {});
                                                   }).catchError((error) {
                                                     ScaffoldMessenger.of(
                                                             context)
@@ -221,9 +222,6 @@ class _HomeAppState extends State<HomeApp> {
                         .catchError((error) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(error.toString())));
-                    });
-                    setState(() {
-                      isLikeAnimating = true;
                     });
                     setState(() {
                       isLikeAnimating = true;
@@ -298,7 +296,7 @@ class _HomeAppState extends State<HomeApp> {
 
                     // Comment Section
                     IconButton(
-                      onPressed: () {
+                      onPressed: () async {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -380,8 +378,8 @@ class _HomeAppState extends State<HomeApp> {
                         ),
                       ),
                       InkWell(
-                        onTap: () {
-                          Navigator.push(
+                        onTap: () async {
+                          String refresh = await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => CommentsScreen(
@@ -391,6 +389,9 @@ class _HomeAppState extends State<HomeApp> {
                               ),
                             ),
                           );
+                          if (refresh == "refresh") {
+                            setState(() {});
+                          }
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
