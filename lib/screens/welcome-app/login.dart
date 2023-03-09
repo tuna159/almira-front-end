@@ -158,7 +158,7 @@ class _LoginState extends State<Login> {
       String password = passwordController.text;
 
       _apiUserService.loginOTP(userName, password).then((user) {
-        Navigator.pushNamed(context, RouteNames.HomeApp);
+        Navigator.pushNamed(context, RouteNames.ResponsiveLayout);
       }).catchError((error) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(error.toString())));

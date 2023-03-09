@@ -1,3 +1,5 @@
+import 'package:almira_front_end/responsive/mobile_screen_layout.dart';
+import 'package:almira_front_end/responsive/responsive_layout.dart';
 import 'package:almira_front_end/screens/home/home-app.dart';
 import 'package:almira_front_end/routes/routes.dart';
 import 'package:almira_front_end/screens/welcome-app/login.dart';
@@ -19,10 +21,12 @@ class ApplicationNetWork extends StatelessWidget {
         RouteNames.HomeApp: (context) => const HomeApp(),
         RouteNames.Login: (context) => const Login(),
         RouteNames.SignUp: (context) => const SignUp(),
+        RouteNames.ResponsiveLayout: (context) =>
+            const ResponsiveLayout(mobileScreenLayout: MobileScreenLayout()),
         // RouteNames.FeedScreen: (context) => const FeedScreen(),
       },
       debugShowCheckedModeBanner: false,
-      initialRoute: RouteNames.Login,
+      initialRoute: RouteNames.Welcome,
       // home: Welcome(),
     );
   }

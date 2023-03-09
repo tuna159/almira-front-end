@@ -20,6 +20,9 @@ class HomeApp extends StatefulWidget {
 class _HomeAppState extends State<HomeApp> {
   bool isLikeAnimating = false;
 
+  int _selectedIndex = 0;
+  final ScrollController _homeController = ScrollController();
+
   late List listOfDataImage;
   late Future futurePost;
 
@@ -63,60 +66,25 @@ class _HomeAppState extends State<HomeApp> {
           },
         ),
       ),
-      bottomNavigationBar: CupertinoTabBar(
-        backgroundColor: defaultColor,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.search,
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.add_circle,
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.favorite,
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person,
-            ),
-            label: '',
-          ),
+    );
+  }
+
+  void showModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        content: const Text('Example Dialog'),
+        actions: <TextButton>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Close'),
+          )
         ],
       ),
     );
   }
-
-  // void showModal(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) => AlertDialog(
-  //       content: const Text('Example Dialog'),
-  //       actions: <TextButton>[
-  //         TextButton(
-  //           onPressed: () {
-  //             Navigator.pop(context);
-  //           },
-  //           child: const Text('Close'),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
 
   ListView buildListViewPost(List listOfData) {
     return ListView.builder(
