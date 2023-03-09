@@ -1,7 +1,9 @@
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/routes/routes.dart';
-import 'package:almira_front_end/screens/comments_screen.dart';
+import 'package:almira_front_end/screens/home/comments_screen.dart';
+import 'package:almira_front_end/utils/colors.dart';
+import 'package:almira_front_end/utils/text.dart';
 import 'package:almira_front_end/widgets/like_animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +35,8 @@ class _HomeAppState extends State<HomeApp> {
       appBar: AppBar(
         title: const Text('Almira'),
         automaticallyImplyLeading: false,
-        backgroundColor: utils.defaulColor,
-        titleTextStyle: utils.getProgressHeaderStyle(),
+        backgroundColor: defaultColor,
+        titleTextStyle: progressHeaderStyle,
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.messenger_outline_sharp),
@@ -62,7 +64,7 @@ class _HomeAppState extends State<HomeApp> {
         ),
       ),
       bottomNavigationBar: CupertinoTabBar(
-        backgroundColor: utils.bColor,
+        backgroundColor: defaultColor,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(

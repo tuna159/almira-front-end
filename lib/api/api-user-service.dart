@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiUserService {
-  final String baseUrl = "http://192.168.1.156:3009";
+  final String baseUrl = "http://192.168.1.59:3009";
 
   var token = "";
 

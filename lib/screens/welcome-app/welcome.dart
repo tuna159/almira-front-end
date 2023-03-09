@@ -1,4 +1,6 @@
 import 'package:almira_front_end/routes/routes.dart';
+import 'package:almira_front_end/utils/colors.dart';
+import 'package:almira_front_end/utils/text.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/utils/utils.dart' as utils;
 
@@ -13,7 +15,7 @@ class _WelcomeState extends State<Welcome> {
   @override
   Widget build(Object context) {
     return Scaffold(
-        backgroundColor: utils.backgroundColor,
+        backgroundColor: backgroundColor,
         body: Container(
           child: Stack(
             children: <Widget>[
@@ -46,7 +48,7 @@ class _WelcomeState extends State<Welcome> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Almira  ', style: utils.getProgressHeaderStyle()),
+                      Text('Almira  ', style: progressHeaderStyle),
                       const Text('A place for dogs and cats',
                           style: TextStyle(
                               fontSize: 22, fontFamily: 'OpenSansMedium')),

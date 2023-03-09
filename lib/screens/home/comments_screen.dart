@@ -1,5 +1,6 @@
 import 'package:almira_front_end/api/api-post-comment-service.dart';
 import 'package:almira_front_end/api/api-post-service.dart';
+import 'package:almira_front_end/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/utils/utils.dart' as utils;
 
@@ -30,7 +31,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: utils.defaulColor,
+        backgroundColor: defaultColor,
         title: const Text(
           'Comments',
         ),

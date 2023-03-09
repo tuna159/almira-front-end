@@ -1,4 +1,4 @@
-import 'package:almira_front_end/screens/comments_screen.dart';
+import 'package:almira_front_end/screens/home/comments_screen.dart';
 import 'package:almira_front_end/screens/welcome-app/welcome.dart';
 
 class RouteNames {

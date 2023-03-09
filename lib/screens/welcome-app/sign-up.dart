@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/model/user.dart';
 import 'package:almira_front_end/routes/routes.dart';
+import 'package:almira_front_end/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -37,7 +38,7 @@ class _SignUpState extends State<SignUp> {
     return Scaffold(
       key: _scaffoldState,
       appBar: AppBar(
-        backgroundColor: utils.defaulColor,
+        backgroundColor: defaultColor,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -178,7 +179,7 @@ class _SignUpState extends State<SignUp> {
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: utils.defaulColor,
+                          backgroundColor: defaultColor,
                         ),
                         child: const Text(
                           'Sign up',

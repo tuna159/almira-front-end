@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/model/user.dart';
 import 'package:almira_front_end/routes/routes.dart';
+import 'package:almira_front_end/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/utils/utils.dart' as utils;
 
@@ -29,7 +30,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: utils.defaulColor,
+          backgroundColor: defaultColor,
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -115,7 +116,7 @@ class _LoginState extends State<Login> {
                             login();
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: utils.defaulColor,
+                            backgroundColor: defaultColor,
                           ),
                           child: const Text(
                             'Login',
