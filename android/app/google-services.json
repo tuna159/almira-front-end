@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "278166033498",
+    "project_id": "almira-filles",
+    "storage_bucket": "almira-filles.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278166033498:android:dba973884602ec0fac7463",
+        "android_client_info": {
+          "package_name": "com.example.almira_front_end"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "278166033498-u5hecclauffseb9f3l069h5ljrpc1n73.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0TpC1CbAbkL4nG1wK963Yf5pChmYlSQA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "278166033498-u5hecclauffseb9f3l069h5ljrpc1n73.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

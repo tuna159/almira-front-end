@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String? requiredFieldEmail(String? valueEm) {
@@ -39,4 +43,22 @@ class UtilSharedPreferences {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     return _prefs.setString('token', value);
   }
+}
+
+// pickImage(ImageSource source) async {
+//   final ImagePicker _imagePicker = ImagePicker();
+//   final image = await _imagePicker.pickImage(source: source);
+//   if (image == null) {
+//     return;
+//   }
+//   return image = File(image.path);
+//   print('No Image Selected');
+// }
+
+showSnackBar(BuildContext context, String text) {
+  return ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(text),
+    ),
+  );
 }

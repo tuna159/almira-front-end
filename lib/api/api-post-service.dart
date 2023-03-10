@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiPostService {
-  final String baseUrl = "http://192.168.1.59:3009";
+  final String baseUrl = "http://192.168.1.156:3009";
 
   Future getPost() async {
     String token = await UtilSharedPreferences.getToken();
@@ -77,6 +77,43 @@ class ApiPostService {
       Uri.parse('$baseUrl/api/v1/post/$id'),
       headers: headers,
     );
+
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody;
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future<void> addNewPost(String content, String image_url) async {
+    String token = await UtilSharedPreferences.getToken();
+
+    List<dynamic> images = [
+      {"image_url": image_url},
+    ];
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    // Map<String, String> body = {
+    //   'content': content,
+    //   'images': json.encode(images),
+    // };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/v1/post'),
+      headers: headers,
+      body: json.encode({
+        'content': content,
+        'images': images,
+      }),
+    );
+
+    // print(body);
 
     var responseBody = jsonDecode(response.body);
     if (responseBody['status_code'] == 200) {
