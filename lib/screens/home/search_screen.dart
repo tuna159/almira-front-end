@@ -52,7 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     );
                   }
                   return ListView.builder(
-                    itemCount: searchUser.length,
+                    itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
                       // return InkWell(
                       //   onTap: () => Navigator.of(context).push(

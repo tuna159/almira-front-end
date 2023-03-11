@@ -72,7 +72,7 @@ class ApiUserService {
     };
 
     final response = await http.get(
-      Uri.parse('$baseUrl/api/v1/user/search?search_key = $search_key'),
+      Uri.parse('$baseUrl/api/v1/user/search?search_key=$search_key'),
       headers: headers,
     );
     var responseBody = jsonDecode(response.body);
