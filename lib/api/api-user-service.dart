@@ -2,9 +2,7 @@ import 'dart:convert';
 
 import 'package:almira_front_end/utils/utils.dart';
 import 'package:almira_front_end/model/user.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiUserService {
   final String baseUrl = "http://192.168.1.156:3009";
