@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:almira_front_end/utils/utils.dart';
 import 'package:almira_front_end/model/user.dart';
@@ -56,6 +57,28 @@ class ApiUserService {
     if (responseBody['status_code'] == 200) {
       print(UserData.fromJson(responseBody));
       UserData.fromJson(responseBody);
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future getUserName(String search_key) async {
+    String token = await UtilSharedPreferences.getToken();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/v1/user/search?search_key = $search_key'),
+      headers: headers,
+    );
+    var responseBody = jsonDecode(response.body);
+
+    if (responseBody['status_code'] == 200) {
+      return responseBody["data"];
     } else {
       throw responseBody["error_message"];
     }
