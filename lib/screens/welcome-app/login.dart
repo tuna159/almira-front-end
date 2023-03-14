@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/model/user.dart';
+import 'package:almira_front_end/responsive/mobile_screen_layout.dart';
+import 'package:almira_front_end/responsive/responsive_layout.dart';
 import 'package:almira_front_end/routes/routes.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/utils/utils.dart' as utils;
 
 import 'package:http/http.dart' as http;
+
+import '../../utils/utils.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -157,8 +161,19 @@ class _LoginState extends State<Login> {
       String userName = userNameController.text;
       String password = passwordController.text;
 
-      _apiUserService.loginOTP(userName, password).then((user) {
-        Navigator.pushNamed(context, RouteNames.ResponsiveLayout);
+      _apiUserService.loginOTP(userName, password).then((user) async {
+        String token = await getTokenFromSF();
+
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResponsiveLayout(
+              token: token,
+            ),
+          ),
+        );
+        ;
       }).catchError((error) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(error.toString())));

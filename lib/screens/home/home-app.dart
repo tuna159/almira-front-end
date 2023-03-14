@@ -287,18 +287,7 @@ class _HomeAppState extends State<HomeApp> {
                     IconButton(
                       onPressed: () {},
                       icon: const Icon(
-                        Icons.send_outlined,
-                      ),
-                    ),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.bookmark_border,
-                          ),
-                        ),
+                        Icons.card_giftcard_outlined,
                       ),
                     ),
                   ],

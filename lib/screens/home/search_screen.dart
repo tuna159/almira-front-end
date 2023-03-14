@@ -1,5 +1,6 @@
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/api/api-user-service.dart';
+import 'package:almira_front_end/screens/home/profile_screen.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -56,27 +57,28 @@ class _SearchScreenState extends State<SearchScreen> {
                 return ListView.builder(
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) {
-                    // return InkWell(
-                    //   onTap: () => Navigator.of(context).push(
-                    //     MaterialPageRoute(
-                    //       builder: (context) => ProfileScreen(
-                    //         uid: (snapshot.data! as dynamic).docs[index]['uid'],
-                    //       ),
-                    //     ),
-                    //   ),
                     searchUser = snapshot.data!;
-                    final user = searchUser[index];
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          user['image_url'],
+                    final user = searchUser[index]!;
+                    return InkWell(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ProfileScreen(
+                            uid: user!["user_id"]!,
+                          ),
                         ),
-                        radius: 16,
                       ),
-                      title: Text(
-                        user['user_name'],
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                            user!['image_url']!,
+                          ),
+                          radius: 16,
+                        ),
+                        title: Text(
+                          user['user_name'],
+                        ),
+                        // ),
                       ),
-                      // ),
                     );
                   },
                 );

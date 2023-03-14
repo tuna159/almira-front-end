@@ -1,10 +1,16 @@
+import 'package:almira_front_end/screens/home/add_post_screen.dart';
+import 'package:almira_front_end/screens/home/home-app.dart';
+import 'package:almira_front_end/screens/home/profile_screen.dart';
+import 'package:almira_front_end/screens/home/search_screen.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/global_variable.dart';
+import 'package:almira_front_end/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MobileScreenLayout extends StatefulWidget {
-  const MobileScreenLayout({Key? key}) : super(key: key);
+  final String token;
+  const MobileScreenLayout({Key? key, required this.token}) : super(key: key);
 
   @override
   State<MobileScreenLayout> createState() => _MobileScreenLayoutState();
@@ -37,14 +43,39 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     pageController.jumpToPage(page);
   }
 
+  // Future<String> getToken() async {
+  //   var token = await fetchGetToken();
+  //   // print(order);
+  //   var uid = decrypToken(token);
+  //   return uid;
+  // }
+
+  // Future<String> fetchGetToken() {
+  //   // Imagine that this function is more complex and slow.
+  //   return Future.delayed(const Duration(seconds: 0),
+  //       () async => await UtilSharedPreferences.getToken());
+  // }
+
+  // main() async {
+  //   String uid = await getToken();
+  //   return uid;
+  // }
+
   @override
   Widget build(BuildContext context) {
+    var uid = decrypToken(widget.token);
+
     return Scaffold(
       body: PageView(
-        controller: pageController,
-        onPageChanged: onPageChanged,
-        children: homeScreenItems,
-      ),
+          controller: pageController,
+          onPageChanged: onPageChanged,
+          children: [
+            const HomeApp(),
+            const SearchScreen(),
+            const AddPostScreen(),
+            const Text('notifications'),
+            ProfileScreen(uid: uid),
+          ]),
       bottomNavigationBar: CupertinoTabBar(
         backgroundColor: defaultColor,
         items: <BottomNavigationBarItem>[

@@ -6,7 +6,7 @@ import 'package:almira_front_end/model/user.dart';
 import 'package:http/http.dart' as http;
 
 class ApiUserService {
-  final String baseUrl = "http://192.168.1.156:3009";
+  final String baseUrl = "http://192.168.1.145:3009";
 
   var token = "";
 
@@ -27,8 +27,9 @@ class ApiUserService {
     if (responseBody['status_code'] == 200) {
       Map<String, dynamic> data = responseBody;
       String token = data["data"]["token"];
-      UtilSharedPreferences.setToken(token);
-      UserData.fromJson(responseBody);
+      await addTokenToSF(token);
+      // print(token);
+      return responseBody["data"];
     } else {
       throw responseBody["error_message"];
     }
@@ -63,7 +64,7 @@ class ApiUserService {
   }
 
   Future getUserName(String search_key) async {
-    String token = await UtilSharedPreferences.getToken();
+    String token = await getTokenFromSF();
 
     Map<String, String> headers = {
       'Content-type': 'application/json',
@@ -79,6 +80,72 @@ class ApiUserService {
 
     if (responseBody['status_code'] == 200) {
       return responseBody["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future getUserDetail(String uid) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/v1/user/$uid'),
+      headers: headers,
+    );
+    var responseBody = jsonDecode(response.body);
+
+    if (responseBody['status_code'] == 200) {
+      Map<String, dynamic> data = responseBody;
+      return data["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future followUser(String uid) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/v1/user/$uid/follow'),
+      headers: headers,
+    );
+    var responseBody = jsonDecode(response.body);
+
+    if (responseBody['status_code'] == 200) {
+      Map<String, dynamic> data = responseBody;
+      return data["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future unfollowUser(String uid) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/v1/user/$uid/unfollow'),
+      headers: headers,
+    );
+    var responseBody = jsonDecode(response.body);
+
+    if (responseBody['status_code'] == 200) {
+      Map<String, dynamic> data = responseBody;
+      return data["data"];
     } else {
       throw responseBody["error_message"];
     }

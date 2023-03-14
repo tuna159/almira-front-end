@@ -5,10 +5,10 @@ import 'package:almira_front_end/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class ApiPostService {
-  final String baseUrl = "http://192.168.1.156:3009";
+  final String baseUrl = "http://192.168.1.145:3009";
 
   Future getPost() async {
-    String token = await UtilSharedPreferences.getToken();
+    String token = await getTokenFromSF();
 
     Map<String, String> headers = {
       'Content-type': 'application/json',
@@ -31,7 +31,7 @@ class ApiPostService {
   }
 
   Future<void> likePost(int id, bool is_liked) async {
-    String token = await UtilSharedPreferences.getToken();
+    String token = await getTokenFromSF();
 
     Map<String, String> headers = {
       'Content-type': 'application/json',
@@ -64,7 +64,7 @@ class ApiPostService {
   }
 
   Future<void> deletePost(int id) async {
-    String token = await UtilSharedPreferences.getToken();
+    String token = await getTokenFromSF();
 
     Map<String, String> headers = {
       'Content-type': 'application/json',
@@ -86,7 +86,7 @@ class ApiPostService {
   }
 
   Future<void> addNewPost(String content, String image_url) async {
-    String token = await UtilSharedPreferences.getToken();
+    String token = await getTokenFromSF();
 
     List<dynamic> images = [
       {"image_url": image_url},
