@@ -113,8 +113,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       return Text(
                                           "Something went wrong! $snapshot");
                                     } else if (snapshot.hasData) {
-                                      print(snapshot.data!);
-                                      print(isFollowing);
                                       return Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,

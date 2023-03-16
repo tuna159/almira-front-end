@@ -28,7 +28,6 @@ class ApiUserService {
       Map<String, dynamic> data = responseBody;
       String token = data["data"]["token"];
       await addTokenToSF(token);
-      // print(token);
       return responseBody["data"];
     } else {
       throw responseBody["error_message"];
@@ -56,7 +55,6 @@ class ApiUserService {
     );
     var responseBody = jsonDecode(response.body);
     if (responseBody['status_code'] == 200) {
-      print(UserData.fromJson(responseBody));
       UserData.fromJson(responseBody);
     } else {
       throw responseBody["error_message"];

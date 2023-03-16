@@ -112,8 +112,6 @@ class ApiPostService {
       }),
     );
 
-    // print(body);
-
     var responseBody = jsonDecode(response.body);
     if (responseBody['status_code'] == 200) {
       return responseBody;

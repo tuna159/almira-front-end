@@ -1,15 +1,12 @@
 import 'package:almira_front_end/api/api-post-service.dart';
-import 'package:almira_front_end/api/api-user-service.dart';
-import 'package:almira_front_end/routes/routes.dart';
 import 'package:almira_front_end/screens/header/message_page.dart';
 import 'package:almira_front_end/screens/home/comments_screen.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/text.dart';
 import 'package:almira_front_end/widgets/like_animation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:almira_front_end/utils/utils.dart' as utils;
-import 'package:http/http.dart';
+
+import '../../utils/utils.dart';
 
 class HomeApp extends StatefulWidget {
   const HomeApp({super.key});
@@ -79,7 +76,6 @@ class _HomeAppState extends State<HomeApp> {
         itemCount: listOfData.length,
         itemBuilder: (context, index) {
           final post = listOfData[index];
-          // print(post);
           listOfDataImage = post["image"];
           final postImage = listOfDataImage[0];
           return Container(
@@ -122,7 +118,11 @@ class _HomeAppState extends State<HomeApp> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          // final userPost = post["user_data"]["user_id"];
+                          // String token = await getTokenFromSF();
+                          // String uid = await decrypToken(token);
+
                           showDialog(
                               context: context,
                               builder: (context) => Dialog(
@@ -271,12 +271,42 @@ class _HomeAppState extends State<HomeApp> {
                     ),
 
                     // Share Widget
-
                     IconButton(
-                      onPressed: () {},
                       icon: const Icon(
                         Icons.card_giftcard_outlined,
                       ),
+                      onPressed: () {
+                        showGeneralDialog(
+                          barrierLabel: "Label",
+                          barrierDismissible: true,
+                          barrierColor: Colors.black.withOpacity(0.5),
+                          transitionDuration: Duration(milliseconds: 700),
+                          context: context,
+                          pageBuilder: (context, anim1, anim2) {
+                            return Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                height: 300,
+                                child: SizedBox.expand(child: FlutterLogo()),
+                                margin: EdgeInsets.only(
+                                    bottom: 50, left: 12, right: 12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(40),
+                                ),
+                              ),
+                            );
+                          },
+                          transitionBuilder: (context, anim1, anim2, child) {
+                            return SlideTransition(
+                              position:
+                                  Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                                      .animate(anim1),
+                              child: child,
+                            );
+                          },
+                        );
+                      },
                     ),
                   ],
                 ),
