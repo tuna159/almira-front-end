@@ -1,6 +1,7 @@
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/routes/routes.dart';
+import 'package:almira_front_end/screens/header/message_page.dart';
 import 'package:almira_front_end/screens/home/comments_screen.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/text.dart';
@@ -45,8 +46,12 @@ class _HomeAppState extends State<HomeApp> {
             icon: const Icon(Icons.messenger_outline_sharp),
             tooltip: 'Show Snackbar',
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('This is a snackbar')));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MessagePage(),
+                ),
+              );
             },
           ),
         ],
@@ -65,23 +70,6 @@ class _HomeAppState extends State<HomeApp> {
             }
           },
         ),
-      ),
-    );
-  }
-
-  void showModal(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        content: const Text('Example Dialog'),
-        actions: <TextButton>[
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('Close'),
-          )
-        ],
       ),
     );
   }

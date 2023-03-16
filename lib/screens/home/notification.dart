@@ -1,4 +1,5 @@
 import 'package:almira_front_end/utils/colors.dart';
+import 'package:almira_front_end/utils/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -16,8 +17,8 @@ class _NotificationsState extends State<Notifications> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notifications'),
-        backgroundColor: defaultColor,
         automaticallyImplyLeading: false,
+        backgroundColor: defaultColor,
       ),
       body: ListView.builder(
         itemCount: 35,
