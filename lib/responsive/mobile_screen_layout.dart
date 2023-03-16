@@ -1,5 +1,6 @@
 import 'package:almira_front_end/screens/home/add_post_screen.dart';
 import 'package:almira_front_end/screens/home/home-app.dart';
+import 'package:almira_front_end/screens/home/notification.dart';
 import 'package:almira_front_end/screens/home/profile_screen.dart';
 import 'package:almira_front_end/screens/home/search_screen.dart';
 import 'package:almira_front_end/utils/colors.dart';
@@ -73,7 +74,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
             const HomeApp(),
             const SearchScreen(),
             const AddPostScreen(),
-            const Text('notifications'),
+            const Notifications(),
             ProfileScreen(uid: uid),
           ]),
       bottomNavigationBar: CupertinoTabBar(
