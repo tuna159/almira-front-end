@@ -1,4 +1,5 @@
 import 'package:almira_front_end/api/api-user-service.dart';
+import 'package:almira_front_end/screens/header/message_detail_page.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/utils.dart';
 import 'package:almira_front_end/widgets/follow_button.dart';
@@ -75,7 +76,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 snap['user_name'],
               ),
               automaticallyImplyLeading: false,
-              centerTitle: false,
             ),
             body: ListView(
               children: [
@@ -157,7 +157,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                           followers++;
                                                         });
                                                       },
-                                                    )
+                                                    ),
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                  return MessageDetailPage(
+                                                    uid: widget.uid,
+                                                  );
+                                                }));
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: defaultColor,
+                                                  border: Border.all(
+                                                    color: Colors.black,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                ),
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  "Message",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                width: 123,
+                                                height: 27,
+                                              )),
                                         ],
                                       );
                                     } else {
