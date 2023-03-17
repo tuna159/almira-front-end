@@ -1,14 +1,9 @@
 // ignore_for_file: unnecessary_null_comparison
 
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:almira_front_end/api/api-user-service.dart';
-import 'package:almira_front_end/model/user.dart';
 import 'package:almira_front_end/routes/routes.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:almira_front_end/utils/utils.dart' as utils;
 
@@ -223,7 +218,6 @@ class _SignUpState extends State<SignUp> {
   //
 
   void sigup() async {
-    // final String baseUrl = "http://192.168.1.145:3009";
     if (_formKey.currentState!.validate()) {
       String email = emailController.text;
       String phone = phoneNumberController.text;
@@ -237,27 +231,5 @@ class _SignUpState extends State<SignUp> {
             .showSnackBar(SnackBar(content: Text(error.toString())));
       });
     }
-
-    //   Future<void> showMyDialogCheckInput() async {
-    //     return showDialog<void>(
-    //       context: context,
-    //       barrierDismissible: false, // user must tap button!
-    //       builder: (BuildContext context) {
-    //         return AlertDialog(
-    //           title: const Text('Confirm New Trip'),
-    //           // ignore: prefer_interpolation_to_compose_strings
-    //           content: Text('Detail Trip '),
-    //           actions: <Widget>[
-    //             TextButton(
-    //               child: const Text('No'),
-    //               onPressed: (() {
-    //                 Navigator.pop(context);
-    //               }),
-    //             ),
-    //           ],
-    //         );
-    //       },
-    //     );
-    //   }
   }
 }

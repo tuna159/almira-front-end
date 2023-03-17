@@ -22,7 +22,6 @@ class ApiPostService {
     var responseBody = jsonDecode(response.body);
 
     if (responseBody['status_code'] == 200) {
-      // return responseBody;
       Map<String, dynamic> data = responseBody;
       return data["data"];
     } else {

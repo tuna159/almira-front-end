@@ -1,8 +1,5 @@
 import 'package:almira_front_end/responsive/mobile_screen_layout.dart';
-import 'package:almira_front_end/utils/global_variable.dart';
 import 'package:flutter/material.dart';
-
-import '../utils/utils.dart';
 
 class ResponsiveLayout extends StatefulWidget {
   final String token;

@@ -18,9 +18,6 @@ class HomeApp extends StatefulWidget {
 class _HomeAppState extends State<HomeApp> {
   bool isLikeAnimating = false;
 
-  int _selectedIndex = 0;
-  final ScrollController _homeController = ScrollController();
-
   late List listOfDataImage;
   late Future futurePost;
 
