@@ -158,36 +158,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         });
                                                       },
                                                     ),
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) {
-                                                  return MessageDetailPage(
-                                                    uid: widget.uid,
-                                                  );
-                                                }));
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: defaultColor,
-                                                  border: Border.all(
-                                                    color: Colors.black,
+                                          snapshot.data!
+                                              ? RichText(
+                                                  text: const TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: "11",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                          text: " Points",
+                                                          style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: Colors.grey,
+                                                          )),
+                                                    ],
                                                   ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                ),
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  "Message",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                width: 123,
-                                                height: 27,
-                                              )),
+                                                )
+                                              : FollowButton(
+                                                  text: 'Message',
+                                                  backgroundColor: Colors.white,
+                                                  textColor: Colors.black,
+                                                  borderColor: Colors.grey,
+                                                  function: () async {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) {
+                                                      return MessageDetailPage(
+                                                        uid: widget.uid,
+                                                      );
+                                                    }));
+                                                  },
+                                                )
                                         ],
                                       );
                                     } else {
