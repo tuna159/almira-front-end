@@ -1,8 +1,11 @@
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/screens/header/message_detail_page.dart';
+import 'package:almira_front_end/screens/home/home-app.dart';
 import 'package:almira_front_end/utils/colors.dart';
+import 'package:almira_front_end/utils/enum.dart';
 import 'package:almira_front_end/utils/utils.dart';
 import 'package:almira_front_end/widgets/follow_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -76,6 +79,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 snap['user_name'],
               ),
               automaticallyImplyLeading: false,
+              actions: [
+                FutureBuilder(
+                    future: uid(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text("Something went wrong! $snapshot");
+                      } else if (snapshot.hasData) {
+                        if (snapshot.data! == false) {
+                          return PopupMenuButton<MenuItems>(
+                            onSelected: (value) async {
+                              if (value == MenuItems.itemBlock) {
+                                showMyDialogBlockUser();
+                              }
+                            },
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: MenuItems.itemBlock,
+                                // child: Text('View List Expense')
+                                child: ListTile(
+                                  leading:
+                                      Icon(CupertinoIcons.clear_thick_circled),
+                                  title: Text('Block User'),
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return IconButton(
+                            icon: const Icon(Icons.logout),
+                            tooltip: 'Show Snackbar',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('This is a snackbar')));
+                            },
+                          );
+                        }
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    })
+              ],
             ),
             body: ListView(
               children: [
@@ -297,6 +342,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  void blockUser() {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('This is a snackbar')));
+  }
+
+  Future<void> showMyDialogBlockUser() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm '),
+          // ignore: prefer_interpolation_to_compose_strings
+          content: Text('Do you want block user'),
+          actions: <Widget>[
+            TextButton(onPressed: blockUser, child: const Text('Yes')),
+            TextButton(
+              child: const Text('No'),
+              onPressed: (() {
+                Navigator.pop(context);
+              }),
+            ),
+          ],
+        );
+      },
     );
   }
 }

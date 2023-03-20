@@ -1,9 +1,11 @@
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/screens/header/message_page.dart';
 import 'package:almira_front_end/screens/home/comments_screen.dart';
+import 'package:almira_front_end/screens/home/profile_screen.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/text.dart';
 import 'package:almira_front_end/widgets/like_animation.dart';
+import 'package:almira_front_end/widgets/selectable_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/utils.dart';
@@ -21,8 +23,17 @@ class _HomeAppState extends State<HomeApp> {
   late List listOfDataImage;
   late Future futurePost;
 
+  int selectedCard = -1;
+
+  final _images = [
+    "https://znews-photo.zingcdn.me/w660/Uploaded/qhj_yvobvhfwbv/2018_07_18/Nguyen_Huy_Binh1.jpg",
+    "https://deviet.vn/wp-content/uploads/2019/04/vuong-quoc-anh.jpg",
+    "https://vietjet.net/includes/uploads/2020/12/nuoc-anh-thuoc-chau-nao-600x388.jpg",
+  ];
+
   @override
   void initState() {
+    _images;
     futurePost = ApiPostService().getPost();
     super.initState();
   }
@@ -89,11 +100,22 @@ class _HomeAppState extends State<HomeApp> {
                   ).copyWith(right: 0),
                   child: Row(
                     children: [
-                      CircleAvatar(
-                        radius: 16,
-                        backgroundImage: NetworkImage(post["user_data"]
-                                ["user_image"]["image_url"]
-                            .toString()),
+                      GestureDetector(
+                        onTap: (() {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ProfileScreen(
+                                uid: post["user_data"]["user_id"],
+                              ),
+                            ),
+                          );
+                        }),
+                        child: CircleAvatar(
+                          radius: 16,
+                          backgroundImage: NetworkImage(post["user_data"]
+                                  ["user_image"]["image_url"]
+                              .toString()),
+                        ),
                       ),
                       Expanded(
                         child: Padding(
@@ -273,34 +295,74 @@ class _HomeAppState extends State<HomeApp> {
                         Icons.card_giftcard_outlined,
                       ),
                       onPressed: () {
-                        showGeneralDialog(
-                          barrierLabel: "Label",
-                          barrierDismissible: true,
-                          barrierColor: Colors.black.withOpacity(0.5),
-                          transitionDuration: Duration(milliseconds: 700),
+                        showModalBottomSheet<void>(
                           context: context,
-                          pageBuilder: (context, anim1, anim2) {
-                            return Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Container(
-                                height: 300,
-                                child: SizedBox.expand(child: FlutterLogo()),
-                                margin: EdgeInsets.only(
-                                    bottom: 50, left: 12, right: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(40),
+                          builder: (BuildContext context) {
+                            return Container(
+                                child: Scrollbar(
+                              thickness: 3,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                child: SingleChildScrollView(
+                                  physics: BouncingScrollPhysics(),
+                                  child: Column(
+                                    children: [
+                                      GridView.builder(
+                                        shrinkWrap: true,
+                                        physics: BouncingScrollPhysics(),
+                                        itemCount: _images.length,
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                                childAspectRatio: 1,
+                                                crossAxisCount: 4,
+                                                crossAxisSpacing: 4.0,
+                                                mainAxisSpacing: 4.0),
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: Colors.white,
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                SelectableImage(
+                                                  isSelected:
+                                                      selectedCard == index,
+                                                  imageNetwork: _images[index],
+                                                  onTap: (imageNetwork) {
+                                                    setState(() {
+                                                      selectedCard = index;
+                                                    });
+                                                  },
+                                                ),
+                                                const SizedBox(height: 10),
+                                                const Text(
+                                                  'Pop Corn',
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      Center(
+                                        child: ElevatedButton(
+                                          child: Text("Button"),
+                                          onPressed: () {},
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            );
-                          },
-                          transitionBuilder: (context, anim1, anim2, child) {
-                            return SlideTransition(
-                              position:
-                                  Tween(begin: Offset(0, 1), end: Offset(0, 0))
-                                      .animate(anim1),
-                              child: child,
-                            );
+                            ));
                           },
                         );
                       },

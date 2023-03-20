@@ -6,7 +6,7 @@ import 'package:almira_front_end/model/user.dart';
 import 'package:http/http.dart' as http;
 
 class ApiUserService {
-  final String baseUrl = "http://192.168.1.74:3009";
+  final String baseUrl = "http://10.22.40.113:3009";
 
   var token = "";
 

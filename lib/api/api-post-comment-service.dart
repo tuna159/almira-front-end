@@ -5,7 +5,7 @@ import 'package:almira_front_end/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class ApiPostCommentService {
-  final String baseUrl = "http://192.168.1.74:3009";
+  final String baseUrl = "http://10.22.40.113:3009";
 
   Future getPostComment(int postId) async {
     String token = await getTokenFromSF();

@@ -111,7 +111,7 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
                         ),
                       ),
                       const Icon(
-                        Icons.settings,
+                        Icons.block,
                         color: Colors.white,
                       ),
                     ],

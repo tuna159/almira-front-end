@@ -19,6 +19,7 @@ class AddPostScreen extends StatefulWidget {
 
 class _AddPostScreenState extends State<AddPostScreen> {
   // Uint8List? _file;
+  bool _toggledCheck = false;
   File? _image;
   bool isLoading = false;
   UploadTask? uploadImageCamera;
@@ -187,6 +188,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
                             hintText: "Write a caption...",
                             border: InputBorder.none),
                         maxLines: 8,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30.0,
+                      width: 30.0,
+                      child: SwitchListTile(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                        value: _toggledCheck,
+                        onChanged: (bool value) {
+                          setState(() => _toggledCheck = value);
+                        },
                       ),
                     ),
                   ],
