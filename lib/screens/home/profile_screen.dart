@@ -1,6 +1,7 @@
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/screens/header/message_detail_page.dart';
 import 'package:almira_front_end/screens/home/home-app.dart';
+import 'package:almira_front_end/screens/home/voucher_list.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/enum.dart';
 import 'package:almira_front_end/utils/utils.dart';
@@ -204,27 +205,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       },
                                                     ),
                                           snapshot.data!
-                                              ? RichText(
-                                                  text: const TextSpan(
-                                                    children: [
-                                                      TextSpan(
-                                                        text: "11",
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                      TextSpan(
-                                                          text: " Points",
-                                                          style: TextStyle(
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            color: Colors.grey,
-                                                          )),
-                                                    ],
-                                                  ),
+                                              ? FollowButton(
+                                                  text: 'Point : ${11}',
+                                                  backgroundColor: Colors.white,
+                                                  textColor: Colors.black,
+                                                  borderColor: Colors.grey,
+                                                  function: () async {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) {
+                                                      return VoucherList();
+                                                    }));
+                                                  },
                                                 )
+                                              // RichText(
+                                              //     text: const TextSpan(
+                                              //       children: [
+                                              //         TextSpan(
+                                              //           text: "11",
+                                              //           style: TextStyle(
+                                              //             fontSize: 18,
+                                              //             color: Colors.black,
+                                              //           ),
+                                              //         ),
+                                              //         TextSpan(
+                                              //             text: " Points",
+                                              //             style: TextStyle(
+                                              //               fontSize: 15,
+                                              //               fontWeight:
+                                              //                   FontWeight.w400,
+                                              //               color: Colors.grey,
+                                              //             )),
+                                              //       ],
+                                              //     ),
+                                              //   )
                                               : FollowButton(
                                                   text: 'Message',
                                                   backgroundColor: Colors.white,
