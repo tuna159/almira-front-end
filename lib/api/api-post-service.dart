@@ -118,4 +118,30 @@ class ApiPostService {
       throw responseBody["error_message"];
     }
   }
+
+  Future sendGiftPost(int id, String uid, int giftId) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/v1/post/$id/sendGift'),
+      headers: headers,
+      body: json.encode({
+        'user_id': uid,
+        'gift_id': giftId,
+      }),
+    );
+
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody;
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
 }

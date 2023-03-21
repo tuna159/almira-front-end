@@ -6,7 +6,6 @@ class UserData {
   String? email;
   String? token;
   int? isDeleted;
-  Null? errorMessage;
 
   UserData({
     this.userId,
@@ -16,7 +15,6 @@ class UserData {
     this.email,
     this.token,
     this.isDeleted,
-    this.errorMessage,
   });
 
   UserData.fromJson(Map<String, dynamic> json) {
@@ -27,7 +25,6 @@ class UserData {
     email = json['email'];
     token = json['token'];
     isDeleted = json['is_deleted'];
-    errorMessage = json['error_message'];
   }
 
   Map<String, dynamic> toJson() {
@@ -39,7 +36,6 @@ class UserData {
     data['email'] = this.email;
     data['token'] = this.token;
     data['is_deleted'] = this.isDeleted;
-    data['error_message'] = this.errorMessage;
     return data;
   }
 }

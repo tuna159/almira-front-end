@@ -1,3 +1,4 @@
+import 'package:almira_front_end/api/api-gift-service.dart';
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/screens/header/message_page.dart';
 import 'package:almira_front_end/screens/home/comments_screen.dart';
@@ -22,20 +23,15 @@ class _HomeAppState extends State<HomeApp> {
 
   late List listOfDataImage;
   late Future futurePost;
+  late List listOfGift;
 
   int selectedCard = -1;
 
-  final _images = [
-    "https://znews-photo.zingcdn.me/w660/Uploaded/qhj_yvobvhfwbv/2018_07_18/Nguyen_Huy_Binh1.jpg",
-    "https://deviet.vn/wp-content/uploads/2019/04/vuong-quoc-anh.jpg",
-    "https://vietjet.net/includes/uploads/2020/12/nuoc-anh-thuoc-chau-nao-600x388.jpg",
-  ];
-
   @override
   void initState() {
-    _images;
-    futurePost = ApiPostService().getPost();
     super.initState();
+    ApiPostService().getPost();
+    ApiGiftService().getAllGift();
   }
 
   @override
@@ -307,56 +303,107 @@ class _HomeAppState extends State<HomeApp> {
                                   physics: BouncingScrollPhysics(),
                                   child: Column(
                                     children: [
-                                      GridView.builder(
-                                        shrinkWrap: true,
-                                        physics: BouncingScrollPhysics(),
-                                        itemCount: _images.length,
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                                childAspectRatio: 1,
-                                                crossAxisCount: 2,
-                                                crossAxisSpacing: 4.0,
-                                                mainAxisSpacing: 4.0),
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: Colors.white,
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                SelectableImage(
-                                                  isSelected:
-                                                      selectedCard == index,
-                                                  imageNetwork: _images[index],
-                                                  onTap: (imageNetwork) {
-                                                    setState(() {
-                                                      selectedCard = index;
-                                                    });
-                                                  },
-                                                ),
-                                                const SizedBox(height: 10),
-                                                const Text(
-                                                  'Pop Corn',
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.w600,
+                                      FutureBuilder(
+                                        future: ApiGiftService().getAllGift(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return Text(
+                                                "Something went wrong! $snapshot");
+                                          } else if (snapshot.hasData) {
+                                            final gift = snapshot.data!;
+                                            return GridView.builder(
+                                              shrinkWrap: true,
+                                              physics: BouncingScrollPhysics(),
+                                              itemCount: gift.length,
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                      childAspectRatio: 1,
+                                                      crossAxisCount: 2,
+                                                      crossAxisSpacing: 4.0,
+                                                      mainAxisSpacing: 4.0),
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                listOfGift = gift;
+                                                final listG = listOfGift[index];
+                                                return Container(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: Colors.white,
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
+                                                  child: Column(
+                                                    children: [
+                                                      SelectableImage(
+                                                        isSelected:
+                                                            selectedCard ==
+                                                                listG[
+                                                                    "gift_id"],
+                                                        imageNetwork:
+                                                            listG["gift_image"],
+                                                        onTap: (imageNetwork) {
+                                                          setState(() {
+                                                            selectedCard =
+                                                                listG[
+                                                                    "gift_id"];
+                                                          });
+                                                        },
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 10),
+                                                      Text(
+                                                        listG["name"],
+                                                        style: const TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      Center(
+                                                        child: ElevatedButton(
+                                                          child:
+                                                              Text("Send Gift"),
+                                                          onPressed: () async {
+                                                            await ApiPostService()
+                                                                .sendGiftPost(
+                                                                    post[
+                                                                        "post_id"],
+                                                                    post["user_data"]
+                                                                        [
+                                                                        "user_id"],
+                                                                    listG[
+                                                                        "gift_id"])
+                                                                .then((value) {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            }).catchError(
+                                                                    (error) {
+                                                              ScaffoldMessenger
+                                                                      .of(
+                                                                          context)
+                                                                  .showSnackBar(
+                                                                      SnackBar(
+                                                                          content:
+                                                                              Text(error.toString())));
+                                                            });
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          } else {
+                                            return const Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          }
                                         },
-                                      ),
-                                      Center(
-                                        child: ElevatedButton(
-                                          child: Text("Button"),
-                                          onPressed: () {},
-                                        ),
                                       ),
                                     ],
                                   ),
