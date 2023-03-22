@@ -3,6 +3,7 @@ import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/utils/utils.dart' as utils;
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class CommentsScreen extends StatefulWidget {
   final postId;
@@ -122,21 +123,41 @@ class _CommentsScreenState extends State<CommentsScreen> {
         listOfDataComments = comment["post_comment"];
         final commentIndex = listOfDataComments[index];
 
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-          child: Row(
+        return Slidable(
+          // startActionPane: ActionPane(
+          //   motion: const StretchMotion(),
+          //   children: [SlidableAction(onPressed: (context) {})],
+          // ),
+          endActionPane: ActionPane(
+            motion: const BehindMotion(),
             children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                  commentIndex["user_data"]["image"]["image_url"].toString(),
-                ),
-                radius: 18,
+              SlidableAction(
+                flex: 2,
+                onPressed: (context) {},
+                icon: Icons.delete,
+                backgroundColor: Colors.red,
+                label: 'Delete',
               ),
-              Expanded(
-                child: Dismissible(
-                  key: Key(commentIndex["content"]),
-                  background: slideRightBackground(),
-                  secondaryBackground: slideLeftBackground(),
+              SlidableAction(
+                flex: 2,
+                onPressed: (context) {},
+                icon: Icons.edit,
+                backgroundColor: Colors.green,
+                label: 'Edit',
+              )
+            ],
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    commentIndex["user_data"]["image"]["image_url"].toString(),
+                  ),
+                  radius: 18,
+                ),
+                Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 16),
                     child: Column(
@@ -171,15 +192,15 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     ),
                   ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: const Icon(
-                  Icons.favorite_border,
-                  size: 16,
-                ),
-              )
-            ],
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  child: const Icon(
+                    Icons.favorite_border,
+                    size: 16,
+                  ),
+                )
+              ],
+            ),
           ),
         );
       },
