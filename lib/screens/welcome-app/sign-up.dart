@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/routes/routes.dart';
+import 'package:almira_front_end/screens/welcome-app/login.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -121,7 +122,7 @@ class _SignUpState extends State<SignUp> {
                           borderSide: BorderSide(
                               color: Color.fromARGB(255, 97, 95, 95)),
                         ),
-                        labelText: "Email",
+                        labelText: "Enter your email",
                         labelStyle: TextStyle(
                             fontFamily: 'OpenSansMedium',
                             color: Color.fromARGB(255, 97, 95, 95)),
@@ -140,7 +141,7 @@ class _SignUpState extends State<SignUp> {
                             borderSide: BorderSide(
                                 color: Color.fromARGB(255, 97, 95, 95)),
                           ),
-                          labelText: 'User Name',
+                          labelText: 'Enter your username',
                           labelStyle: TextStyle(
                               fontFamily: 'OpenSansMedium',
                               color: Color.fromARGB(255, 97, 95, 95))),
@@ -159,7 +160,7 @@ class _SignUpState extends State<SignUp> {
                           borderSide: BorderSide(
                               color: Color.fromARGB(255, 97, 95, 95)),
                         ),
-                        labelText: 'Password',
+                        labelText: 'Enter your password',
                         labelStyle: TextStyle(
                             fontFamily: 'OpenSansMedium',
                             color: Color.fromARGB(255, 97, 95, 95)),
@@ -190,7 +191,7 @@ class _SignUpState extends State<SignUp> {
                           borderSide: BorderSide(
                               color: Color.fromARGB(255, 97, 95, 95)),
                         ),
-                        labelText: 'Confirm Password',
+                        labelText: 'Enter confirm password',
                         labelStyle: TextStyle(
                             fontFamily: 'OpenSansMedium',
                             color: Color.fromARGB(255, 97, 95, 95)),
@@ -213,7 +214,7 @@ class _SignUpState extends State<SignUp> {
                             borderSide: BorderSide(
                                 color: Color.fromARGB(255, 97, 95, 95)),
                           ),
-                          labelText: 'Infomation',
+                          labelText: 'Enter infomation',
                           labelStyle: TextStyle(
                               fontFamily: 'OpenSansMedium',
                               color: Color.fromARGB(255, 97, 95, 95))),
@@ -255,7 +256,12 @@ class _SignUpState extends State<SignUp> {
                               color: Color.fromARGB(255, 4, 191, 182)),
                         ),
                         onPressed: () {
-                          sigup();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Login(),
+                            ),
+                          );
                           //signup screen
                         },
                       )
