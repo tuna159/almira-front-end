@@ -5,7 +5,7 @@ import 'package:almira_front_end/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class ApiGiftService {
-  final String baseUrl = "http://192.168.1.45:3009";
+  final String baseUrl = "http://192.168.1.156:3009";
 
   Future getAllGift() async {
     String token = await getTokenFromSF();

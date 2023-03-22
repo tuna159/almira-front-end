@@ -2,6 +2,7 @@ import 'package:almira_front_end/api/api-gift-service.dart';
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/screens/header/message_page.dart';
 import 'package:almira_front_end/screens/home/comments_screen.dart';
+import 'package:almira_front_end/screens/home/edit_post_screen.dart';
 import 'package:almira_front_end/screens/home/gift_post.dart';
 import 'package:almira_front_end/screens/home/profile_screen.dart';
 import 'package:almira_front_end/utils/colors.dart';
@@ -34,7 +35,6 @@ class _HomeAppState extends State<HomeApp> {
   void initState() {
     super.initState();
     ApiPostService().getPost();
-    ApiGiftService().getAllGift();
   }
 
   @override
@@ -84,6 +84,7 @@ class _HomeAppState extends State<HomeApp> {
         itemBuilder: (context, index) {
           final post = listOfData[index];
           listOfDataImage = post["image"];
+          print(post);
           final postImage = listOfDataImage[0];
           return Container(
             padding: const EdgeInsets.symmetric(
@@ -185,7 +186,25 @@ class _HomeAppState extends State<HomeApp> {
                                                         textColor:
                                                             Colors.black),
                                                     CustomButton(
-                                                        function: () async {},
+                                                        function: () async {
+                                                          await Navigator.of(
+                                                                  context)
+                                                              .push(
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  EditPostScreen(
+                                                                postId: post[
+                                                                    "post_id"],
+                                                                content: post[
+                                                                    "content"],
+                                                                is_incognito: post[
+                                                                    "is_incognito"],
+                                                                imageUrl: postImage[
+                                                                    'image_url'],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
                                                         backgroundColor:
                                                             backgroundColor,
                                                         borderColor:

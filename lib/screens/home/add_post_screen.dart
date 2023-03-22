@@ -84,7 +84,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     try {
       // upload to storage and db
       await _apiPostService
-          .addNewPost(_descriptionController.text, urlDowload)
+          .addNewPost(_descriptionController.text, urlDowload, _toggledCheck)
           .then((value) {
         setState(() {
           isLoading = false;
@@ -168,10 +168,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(
-                        height: 45.0,
-                        width: 45.0,
+                        height: 60.0,
+                        width: 60.0,
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
                           child: Image.file(
                             _image!,
                             width: 450,
@@ -180,7 +179,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           ),
                         )),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.7,
+                      height: 60.0,
+                      width: 300.0,
                       child: TextField(
                         controller: _descriptionController,
                         decoration: const InputDecoration(
@@ -189,18 +189,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         maxLines: 8,
                       ),
                     ),
-                    SizedBox(
-                      height: 30.0,
-                      width: 30.0,
-                      child: SwitchListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                        value: _toggledCheck,
-                        onChanged: (bool value) {
-                          setState(() => _toggledCheck = value);
-                        },
-                      ),
-                    ),
                   ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: SwitchListTile(
+                    title: const Text("Only me mode"),
+                    value: _toggledCheck,
+                    onChanged: (bool value) {
+                      setState(() => _toggledCheck = value);
+                    },
+                  ),
                 ),
                 const Divider(),
               ],

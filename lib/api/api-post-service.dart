@@ -5,7 +5,7 @@ import 'package:almira_front_end/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class ApiPostService {
-  final String baseUrl = "http://192.168.1.45:3009";
+  final String baseUrl = "http://192.168.1.156:3009";
 
   Future getPost() async {
     String token = await getTokenFromSF();
@@ -84,7 +84,8 @@ class ApiPostService {
     }
   }
 
-  Future<void> addNewPost(String content, String image_url) async {
+  Future<void> addNewPost(
+      String content, String image_url, bool is_incognito) async {
     String token = await getTokenFromSF();
 
     List<dynamic> images = [
@@ -105,10 +106,8 @@ class ApiPostService {
     final response = await http.post(
       Uri.parse('$baseUrl/api/v1/post'),
       headers: headers,
-      body: json.encode({
-        'content': content,
-        'images': images,
-      }),
+      body: json.encode(
+          {'content': content, 'images': images, 'is_incognito': is_incognito}),
     );
 
     var responseBody = jsonDecode(response.body);
@@ -162,6 +161,34 @@ class ApiPostService {
       Uri.parse('$baseUrl/api/v1/post/$id/reports'),
       headers: headers,
       body: jsonEncode(body),
+    );
+
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody;
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future<void> updatePost(String content, bool is_incognito, int id) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    // Map<String, String> body = {
+    //   'content': content,
+    //   'images': json.encode(images),
+    // };
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/v1/post/$id'),
+      headers: headers,
+      body: json.encode({'content': content, 'is_incognito': is_incognito}),
     );
 
     var responseBody = jsonDecode(response.body);
