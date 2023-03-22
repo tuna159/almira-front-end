@@ -144,4 +144,31 @@ class ApiPostService {
       throw responseBody["error_message"];
     }
   }
+
+  Future<void> reportPost(int id, String message) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    Map<String, String> body = {
+      'message': message,
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/v1/post/$id/reports'),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody;
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
 }

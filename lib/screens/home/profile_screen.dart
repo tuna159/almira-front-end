@@ -1,11 +1,10 @@
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/screens/header/message_detail_page.dart';
-import 'package:almira_front_end/screens/home/home-app.dart';
 import 'package:almira_front_end/screens/home/voucher_list.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/enum.dart';
 import 'package:almira_front_end/utils/utils.dart';
-import 'package:almira_front_end/widgets/follow_button.dart';
+import 'package:almira_front_end/widgets/custom_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -163,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           snapshot.data!
-                                              ? FollowButton(
+                                              ? CustomButton(
                                                   backgroundColor: defaultColor,
                                                   borderColor: Colors.grey,
                                                   text: "Edit Profile",
@@ -171,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   function: () {},
                                                 )
                                               : isFollowing
-                                                  ? FollowButton(
+                                                  ? CustomButton(
                                                       text: 'Unfollow',
                                                       backgroundColor:
                                                           Colors.white,
@@ -187,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         });
                                                       },
                                                     )
-                                                  : FollowButton(
+                                                  : CustomButton(
                                                       text: 'Follow',
                                                       backgroundColor:
                                                           defaultColor,
@@ -204,7 +203,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       },
                                                     ),
                                           snapshot.data!
-                                              ? FollowButton(
+                                              ? CustomButton(
                                                   text: 'Point : ${11}',
                                                   backgroundColor: Colors.white,
                                                   textColor: Colors.black,
@@ -238,7 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               //       ],
                                               //     ),
                                               //   )
-                                              : FollowButton(
+                                              : CustomButton(
                                                   text: 'Message',
                                                   backgroundColor: Colors.white,
                                                   textColor: Colors.black,

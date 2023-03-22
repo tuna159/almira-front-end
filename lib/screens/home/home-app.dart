@@ -6,8 +6,9 @@ import 'package:almira_front_end/screens/home/gift_post.dart';
 import 'package:almira_front_end/screens/home/profile_screen.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/text.dart';
+import 'package:almira_front_end/widgets/custom_button.dart';
 import 'package:almira_front_end/widgets/like_animation.dart';
-import 'package:almira_front_end/widgets/selectable_image.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../utils/utils.dart';
@@ -21,10 +22,11 @@ class HomeApp extends StatefulWidget {
 
 class _HomeAppState extends State<HomeApp> {
   bool isLikeAnimating = false;
-
+  bool isCheckUser = false;
   late List listOfDataImage;
   late Future futurePost;
   late List listOfGift;
+  TextEditingController messageReportController = TextEditingController();
 
   int selectedCard = -1;
 
@@ -135,50 +137,155 @@ class _HomeAppState extends State<HomeApp> {
                       ),
                       IconButton(
                         onPressed: () async {
-                          // final userPost = post["user_data"]["user_id"];
-                          // String token = await getTokenFromSF();
-                          // String uid = await decrypToken(token);
-
-                          showDialog(
-                              context: context,
-                              builder: (context) => Dialog(
-                                    backgroundColor: Colors.white,
+                          final userPost = post["user_data"]["user_id"];
+                          String token = await getTokenFromSF();
+                          String uid = await decrypToken(token);
+                          showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) => Dialog(
+                              child: Container(
+                                child: Scrollbar(
+                                  thickness: 3,
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10.0),
                                     child: ListView(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 16,
-                                      ),
-                                      shrinkWrap: true,
-                                      children: [
-                                        'Delete',
-                                      ]
-                                          .map((e) => InkWell(
-                                                onTap: () async {
-                                                  await ApiPostService()
-                                                      .deletePost(
-                                                          post["post_id"])
-                                                      .then((e) {
-                                                    Navigator.pop(context);
-                                                    setState(() {});
-                                                  }).catchError((error) {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(SnackBar(
-                                                            content: Text(error
-                                                                .toString())));
-                                                  });
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 16,
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 16,
+                                        ),
+                                        shrinkWrap: true,
+                                        children: [
+                                          userPost == uid
+                                              ? Column(
+                                                  children: [
+                                                    CustomButton(
+                                                        function: () async {
+                                                          await ApiPostService()
+                                                              .deletePost(post[
+                                                                  "post_id"])
+                                                              .then((e) {
+                                                            Navigator.pop(
+                                                                context);
+                                                            setState(() {});
+                                                          }).catchError(
+                                                                  (error) {
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(SnackBar(
+                                                                    content: Text(
+                                                                        error
+                                                                            .toString())));
+                                                          });
+                                                        },
+                                                        backgroundColor:
+                                                            backgroundColor,
+                                                        borderColor:
+                                                            Colors.grey,
+                                                        text: "Delete",
+                                                        textColor:
+                                                            Colors.black),
+                                                    CustomButton(
+                                                        function: () async {},
+                                                        backgroundColor:
+                                                            backgroundColor,
+                                                        borderColor:
+                                                            Colors.grey,
+                                                        text: "Edit",
+                                                        textColor: Colors.black)
+                                                  ],
+                                                )
+                                              : SingleChildScrollView(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
+                                                    child: Form(
+                                                      child: Column(
+                                                        children: [
+                                                          Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(10),
+                                                            child:
+                                                                TextFormField(
+                                                              controller:
+                                                                  messageReportController,
+                                                              autovalidateMode:
+                                                                  AutovalidateMode
+                                                                      .onUserInteraction,
+                                                              keyboardType:
+                                                                  TextInputType
+                                                                      .text,
+                                                              decoration:
+                                                                  const InputDecoration(
+                                                                      border:
+                                                                          OutlineInputBorder(),
+                                                                      focusedBorder:
+                                                                          OutlineInputBorder(
+                                                                        borderSide: BorderSide(
+                                                                            color: Color.fromARGB(
+                                                                                255,
+                                                                                97,
+                                                                                95,
+                                                                                95)),
+                                                                      ),
+                                                                      labelText:
+                                                                          'Message Report',
+                                                                      labelStyle: TextStyle(
+                                                                          fontFamily:
+                                                                              'OpenSansMedium',
+                                                                          color: Color.fromARGB(
+                                                                              255,
+                                                                              97,
+                                                                              95,
+                                                                              95))),
+                                                            ),
+                                                          ),
+                                                          CustomButton(
+                                                              function:
+                                                                  () async {
+                                                                await ApiPostService()
+                                                                    .reportPost(
+                                                                        post[
+                                                                            "post_id"],
+                                                                        messageReportController
+                                                                            .text)
+                                                                    .then((e) {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  setState(
+                                                                      () {});
+                                                                }).catchError(
+                                                                        (error) {
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .showSnackBar(SnackBar(
+                                                                          content:
+                                                                              Text(error.toString())));
+                                                                });
+                                                                setState(() {
+                                                                  messageReportController
+                                                                      .text = "";
+                                                                });
+                                                              },
+                                                              backgroundColor:
+                                                                  Colors.red,
+                                                              borderColor:
+                                                                  Colors.grey,
+                                                              text: "Report",
+                                                              textColor:
+                                                                  Colors.white)
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
-                                                  child: Text(e),
-                                                ),
-                                              ))
-                                          .toList(),
-                                    ),
-                                  ));
+                                                )
+                                        ]),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
                         },
                         icon: const Icon(
                           Icons.more_vert,
