@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/utils/colors.dart';
@@ -75,7 +74,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     String fileNamePickerCamera = basename(_image!.path);
     final file = File(_image!.path);
     final storageRef =
-        FirebaseStorage.instance.ref().child('image/$fileNamePickerCamera');
+        FirebaseStorage.instance.ref().child('posts/$fileNamePickerCamera');
     uploadImageCamera = storageRef.putFile(file);
 
     final snapshot = await uploadImageCamera!.whenComplete(() {});

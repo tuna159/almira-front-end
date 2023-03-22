@@ -34,18 +34,19 @@ class ApiUserService {
     }
   }
 
-  Future<void> signUp(String email, String phoneNumber, String userName,
-      String password) async {
+  Future<void> signUp(String email, String introduction, String userName,
+      String password, String imageUrl) async {
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
     };
 
     Map<String, String> body = {
-      'email_address': email,
-      'phone_number': phoneNumber,
+      'email': email,
       'username': userName,
-      'password': password
+      'password': password,
+      'image_url': imageUrl,
+      'introduction': introduction,
     };
 
     final response = await http.post(
@@ -55,7 +56,10 @@ class ApiUserService {
     );
     var responseBody = jsonDecode(response.body);
     if (responseBody['status_code'] == 200) {
-      UserData.fromJson(responseBody);
+      Map<String, dynamic> data = responseBody;
+      String token = data["data"]["token"];
+      await addTokenToSF(token);
+      return responseBody["data"];
     } else {
       throw responseBody["error_message"];
     }

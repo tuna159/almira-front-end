@@ -25,7 +25,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late bool isLoading;
   var snap;
   late List listImage;
-  var image;
 
   @override
   void initState() {

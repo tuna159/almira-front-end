@@ -1,11 +1,19 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import 'dart:io';
+
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/routes/routes.dart';
 import 'package:almira_front_end/utils/colors.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 
 import 'package:almira_front_end/utils/utils.dart' as utils;
+
+import '../../utils/utils.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
 
@@ -19,14 +27,26 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   ApiUserService _apiUserService = ApiUserService();
 
-  bool _isLoading = false;
+  File? _image;
+  UploadTask? uploadImageCamera;
+
+  bool isLoading = false;
+  String url = '';
 
   TextEditingController emailController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController infomationController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+  selectImage() async {
+    File im = await pickCamera(ImageSource.gallery);
+    // set state because we need to display the image we selected on the circle avatar
+    setState(() {
+      _image = im;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +62,36 @@ class _SignUpState extends State<SignUp> {
               key: _formKey,
               child: Column(
                 children: <Widget>[
+                  Stack(
+                    children: [
+                      _image != null
+                          ? SizedBox(
+                              height: 150.0,
+                              width: 150.0,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(80),
+                                child: Image.file(
+                                  _image!,
+                                  width: 450,
+                                  height: 450,
+                                  fit: BoxFit.cover,
+                                ),
+                              ))
+                          : const CircleAvatar(
+                              radius: 64,
+                              backgroundImage: NetworkImage(
+                                  'https://icon-library.com/images/default-user-icon/default-user-icon-13.jpg'),
+                            ),
+                      Positioned(
+                        bottom: -10,
+                        left: 80,
+                        child: IconButton(
+                          onPressed: selectImage,
+                          icon: const Icon(Icons.add_a_photo),
+                        ),
+                      )
+                    ],
+                  ),
                   Container(
                       alignment: Alignment.center,
                       padding: const EdgeInsets.all(10),
@@ -76,25 +126,6 @@ class _SignUpState extends State<SignUp> {
                             fontFamily: 'OpenSansMedium',
                             color: Color.fromARGB(255, 97, 95, 95)),
                       ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    child: TextFormField(
-                      validator: utils.requiredFieldPhoneNumber,
-                      controller: phoneNumberController,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 97, 95, 95)),
-                          ),
-                          labelText: 'Phone Number',
-                          labelStyle: TextStyle(
-                              fontFamily: 'OpenSansMedium',
-                              color: Color.fromARGB(255, 97, 95, 95))),
                     ),
                   ),
                   Container(
@@ -170,6 +201,28 @@ class _SignUpState extends State<SignUp> {
                     height: 20,
                   ),
                   Container(
+                    padding: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      validator: utils.requiredFieldPhoneNumber,
+                      controller: infomationController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 97, 95, 95)),
+                          ),
+                          labelText: 'Infomation',
+                          labelStyle: TextStyle(
+                              fontFamily: 'OpenSansMedium',
+                              color: Color.fromARGB(255, 97, 95, 95))),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
                       height: 50,
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: ElevatedButton(
@@ -215,21 +268,61 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  //
-
   void sigup() async {
+    setState(() {
+      isLoading = true;
+    });
+    String fileNamePickerCamera = basename(_image!.path);
+    final file = File(_image!.path);
+    final storageRef =
+        FirebaseStorage.instance.ref().child('posts/$fileNamePickerCamera');
+    uploadImageCamera = storageRef.putFile(file);
+
+    final snapshot = await uploadImageCamera!.whenComplete(() {});
+    final urlDowload = await snapshot.ref.getDownloadURL();
+    print('Dowload Link : $urlDowload ');
+    setState(() {
+      url = urlDowload;
+    });
     if (_formKey.currentState!.validate()) {
       String email = emailController.text;
-      String phone = phoneNumberController.text;
+      String infomation = infomationController.text;
       String userName = userNameController.text;
       String password = passwordController.text;
 
-      _apiUserService.signUp(email, phone, userName, password).then((user) {
-        Navigator.pushNamed(context, RouteNames.HomeApp);
-      }).catchError((error) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(error.toString())));
-      });
+      try {
+        await _apiUserService
+            .signUp(email, infomation, userName, password, urlDowload)
+            .then((user) {
+          Navigator.pushNamed(this.context, RouteNames.HomeApp);
+        }).catchError((error) {
+          ScaffoldMessenger.of(this.context)
+              .showSnackBar(SnackBar(content: Text(error.toString())));
+        });
+      } catch (err) {
+        setState(() {
+          isLoading = false;
+        });
+        showSnackBar(
+          this.context,
+          err.toString(),
+        );
+      }
     }
   }
+
+  Future pickCamera(ImageSource source) async {
+    try {
+      final ImagePicker _imagePicker = ImagePicker();
+      final image = await _imagePicker.pickImage(source: source);
+      if (image == null) return;
+      final imageTpr = File(image.path);
+      setState(() => this._image = imageTpr);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  //
+
 }
