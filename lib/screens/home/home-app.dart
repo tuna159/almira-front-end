@@ -2,6 +2,7 @@ import 'package:almira_front_end/api/api-gift-service.dart';
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/screens/header/message_page.dart';
 import 'package:almira_front_end/screens/home/comments_screen.dart';
+import 'package:almira_front_end/screens/home/gift_post.dart';
 import 'package:almira_front_end/screens/home/profile_screen.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/text.dart';
@@ -291,126 +292,13 @@ class _HomeAppState extends State<HomeApp> {
                         Icons.card_giftcard_outlined,
                       ),
                       onPressed: () {
-                        showModalBottomSheet<void>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Container(
-                                child: Scrollbar(
-                              thickness: 3,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                                child: SingleChildScrollView(
-                                  physics: BouncingScrollPhysics(),
-                                  child: Column(
-                                    children: [
-                                      FutureBuilder(
-                                        future: ApiGiftService().getAllGift(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasError) {
-                                            return Text(
-                                                "Something went wrong! $snapshot");
-                                          } else if (snapshot.hasData) {
-                                            final gift = snapshot.data!;
-                                            return GridView.builder(
-                                              shrinkWrap: true,
-                                              physics: BouncingScrollPhysics(),
-                                              itemCount: gift.length,
-                                              gridDelegate:
-                                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                                      childAspectRatio: 1,
-                                                      crossAxisCount: 2,
-                                                      crossAxisSpacing: 4.0,
-                                                      mainAxisSpacing: 4.0),
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                listOfGift = gift;
-                                                final listG = listOfGift[index];
-                                                return Container(
-                                                  padding:
-                                                      const EdgeInsets.all(8),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    color: Colors.white,
-                                                  ),
-                                                  child: Column(
-                                                    children: [
-                                                      SelectableImage(
-                                                        isSelected:
-                                                            selectedCard ==
-                                                                listG[
-                                                                    "gift_id"],
-                                                        imageNetwork:
-                                                            listG["gift_image"],
-                                                        onTap: (imageNetwork) {
-                                                          setState(() {
-                                                            selectedCard =
-                                                                listG[
-                                                                    "gift_id"];
-                                                          });
-                                                        },
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 10),
-                                                      Text(
-                                                        listG["name"],
-                                                        style: const TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                      Center(
-                                                        child: ElevatedButton(
-                                                          child:
-                                                              Text("Send Gift"),
-                                                          onPressed: () async {
-                                                            await ApiPostService()
-                                                                .sendGiftPost(
-                                                                    post[
-                                                                        "post_id"],
-                                                                    post["user_data"]
-                                                                        [
-                                                                        "user_id"],
-                                                                    listG[
-                                                                        "gift_id"])
-                                                                .then((value) {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            }).catchError(
-                                                                    (error) {
-                                                              ScaffoldMessenger
-                                                                      .of(
-                                                                          context)
-                                                                  .showSnackBar(
-                                                                      SnackBar(
-                                                                          content:
-                                                                              Text(error.toString())));
-                                                            });
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          } else {
-                                            return const Center(
-                                                child:
-                                                    CircularProgressIndicator());
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ));
-                          },
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GiftsPost(
+                                postId: post["post_id"],
+                                uid: post["user_data"]["user_id"]),
+                          ),
                         );
                       },
                     ),
