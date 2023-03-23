@@ -152,4 +152,30 @@ class ApiUserService {
       throw responseBody["error_message"];
     }
   }
+
+  Future blockUser(String uid) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+    Map<String, String> body = {
+      'user_id': uid,
+    };
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/v1/me/blocks'),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    var responseBody = jsonDecode(response.body);
+
+    if (responseBody['status_code'] == 200) {
+      Map<String, dynamic> data = responseBody;
+      return data["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
 }

@@ -357,9 +357,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void blockUser() {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('This is a snackbar')));
+  void blockUser() async {
+    await ApiUserService().blockUser(widget.uid).then((value) async {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Successful block user')));
+    }).catchError((error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.toString())));
+    });
+    setState(() {});
   }
 
   Future<void> showMyDialogBlockUser() async {
@@ -372,12 +379,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // ignore: prefer_interpolation_to_compose_strings
           content: Text('Do you want block user'),
           actions: <Widget>[
-            TextButton(onPressed: blockUser, child: const Text('Yes')),
             TextButton(
-              child: const Text('No'),
-              onPressed: (() {
+                onPressed: blockUser,
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(color: Colors.green),
+                )),
+            TextButton(
+              child: const Text('No', style: TextStyle(color: Colors.red)),
+              onPressed: () {
                 Navigator.pop(context);
-              }),
+              },
             ),
           ],
         );
