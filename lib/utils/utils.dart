@@ -14,13 +14,6 @@ String? requiredFieldEmail(String? valueEm) {
   return null;
 }
 
-String? requiredFieldPhoneNumber(String? valuePn) {
-  if (valuePn == null || valuePn.isEmpty) {
-    return 'This field phone number can not be empty';
-  }
-  return null;
-}
-
 String? requiredFieldUserName(String? valueUn) {
   if (valueUn == null || valueUn.isEmpty) {
     return 'This field user name can not be empty';

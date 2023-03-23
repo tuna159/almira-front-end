@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:almira_front_end/api/api-user-service.dart';
+import 'package:almira_front_end/responsive/responsive_layout.dart';
 import 'package:almira_front_end/routes/routes.dart';
 import 'package:almira_front_end/screens/welcome-app/login.dart';
 import 'package:almira_front_end/utils/colors.dart';
@@ -32,7 +33,8 @@ class _SignUpState extends State<SignUp> {
   UploadTask? uploadImageCamera;
 
   bool isLoading = false;
-  String url = '';
+  String url =
+      'https://icon-library.com/images/default-user-icon/default-user-icon-13.jpg';
 
   TextEditingController emailController = TextEditingController();
   TextEditingController infomationController = TextEditingController();
@@ -204,10 +206,7 @@ class _SignUpState extends State<SignUp> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     child: TextFormField(
-                      validator: utils.requiredFieldPhoneNumber,
                       controller: infomationController,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(
@@ -235,7 +234,7 @@ class _SignUpState extends State<SignUp> {
                           style: TextStyle(
                               fontSize: 12, fontFamily: 'OpenSanssBold'),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           sigup();
                         },
                       )),
@@ -275,32 +274,43 @@ class _SignUpState extends State<SignUp> {
   }
 
   void sigup() async {
-    setState(() {
-      isLoading = true;
-    });
-    String fileNamePickerCamera = basename(_image!.path);
-    final file = File(_image!.path);
-    final storageRef =
-        FirebaseStorage.instance.ref().child('posts/$fileNamePickerCamera');
-    uploadImageCamera = storageRef.putFile(file);
-
-    final snapshot = await uploadImageCamera!.whenComplete(() {});
-    final urlDowload = await snapshot.ref.getDownloadURL();
-    print('Dowload Link : $urlDowload ');
-    setState(() {
-      url = urlDowload;
-    });
     if (_formKey.currentState!.validate()) {
       String email = emailController.text;
-      String infomation = infomationController.text;
       String userName = userNameController.text;
       String password = passwordController.text;
+      setState(() {
+        isLoading = true;
+      });
+      var s = _image;
+      if (s != null) {
+        String fileNamePickerCamera = basename(_image!.path);
+        final file = File(_image!.path);
+        final storageRef =
+            FirebaseStorage.instance.ref().child('posts/$fileNamePickerCamera');
+        uploadImageCamera = storageRef.putFile(file);
+
+        final snapshot = await uploadImageCamera!.whenComplete(() {});
+        final urlDowload = await snapshot.ref.getDownloadURL();
+        print('Dowload Link : $urlDowload ');
+        setState(() {
+          url = urlDowload;
+        });
+      }
 
       try {
         await _apiUserService
-            .signUp(email, infomation, userName, password, urlDowload)
-            .then((user) {
-          Navigator.pushNamed(this.context, RouteNames.HomeApp);
+            .signUp(email, infomationController.text, userName, password, url)
+            .then((user) async {
+          String token = await getTokenFromSF();
+
+          Navigator.push(
+            this.context,
+            MaterialPageRoute(
+              builder: (context) => ResponsiveLayout(
+                token: token,
+              ),
+            ),
+          );
         }).catchError((error) {
           ScaffoldMessenger.of(this.context)
               .showSnackBar(SnackBar(content: Text(error.toString())));
