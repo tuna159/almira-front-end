@@ -99,7 +99,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 child: ListTile(
                                   leading:
                                       Icon(CupertinoIcons.clear_thick_circled),
-                                  title: Text('Block User'),
+                                  title: Text('Block '),
+                                ),
+                              ),
+                              const PopupMenuItem(
+                                value: MenuItems.itemUnblock,
+                                // child: Text('View List Expense')
+                                child: ListTile(
+                                  leading:
+                                      Icon(CupertinoIcons.clear_thick_circled),
+                                  title: Text('Unblock '),
                                 ),
                               ),
                             ],

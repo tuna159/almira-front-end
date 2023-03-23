@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
-enum MenuItems {
-  itemBlock,
-}
+enum MenuItems { itemBlock, itemUnblock }
 
 const itemBlock = MenuItemCheck(
   text: 'Block',
+  icon: Icons.delete,
+);
+
+const itemUnblock = MenuItemCheck(
+  text: 'Unblock',
   icon: Icons.delete,
 );
 
