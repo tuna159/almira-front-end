@@ -84,7 +84,6 @@ class _HomeAppState extends State<HomeApp> {
         itemBuilder: (context, index) {
           final post = listOfData[index];
           listOfDataImage = post["image"];
-          print(post);
           final postImage = listOfDataImage[0];
           return Container(
             padding: const EdgeInsets.symmetric(
@@ -400,10 +399,8 @@ class _HomeAppState extends State<HomeApp> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CommentsScreen(
-                                postId: post["post_id"],
-                                avatar: post["user_data"]["user_image"]
-                                    ["image_url"]),
+                            builder: (context) =>
+                                CommentsScreen(postId: post["post_id"]),
                           ),
                         );
                       },
@@ -478,8 +475,6 @@ class _HomeAppState extends State<HomeApp> {
                             MaterialPageRoute(
                               builder: (context) => CommentsScreen(
                                 postId: post["post_id"],
-                                avatar: post["user_data"]["user_image"]
-                                    ["image_url"],
                               ),
                             ),
                           );

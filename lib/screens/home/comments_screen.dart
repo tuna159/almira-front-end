@@ -2,15 +2,14 @@ import 'package:almira_front_end/api/api-post-comment-service.dart';
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/widgets/custom_button.dart';
+import 'package:almira_front_end/widgets/like_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/utils/utils.dart' as utils;
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class CommentsScreen extends StatefulWidget {
   final postId;
-  final avatar;
-  const CommentsScreen({Key? key, required this.postId, required this.avatar})
-      : super(key: key);
+  const CommentsScreen({Key? key, required this.postId}) : super(key: key);
 
   @override
   _CommentsScreenState createState() => _CommentsScreenState();
@@ -24,6 +23,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
       TextEditingController();
 
   late List listOfDataComments;
+  bool isLikeAnimating = false;
   @override
   void initState() {
     futurePostComment = ApiPostCommentService().getPostComment(widget.postId);
@@ -70,10 +70,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
           padding: const EdgeInsets.only(left: 16, right: 8),
           child: Row(
             children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(widget.avatar),
-                radius: 18,
-              ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16, right: 8),
@@ -106,7 +102,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   child: const Text(
                     'Post',
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(color: defaultColor),
                   ),
                 ),
               )
@@ -125,6 +121,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
         listOfDataComments = comment["post_comment"];
         final commentIndex = listOfDataComments[index];
+        print(commentIndex["is_liked_comment"]);
 
         return Slidable(
           // startActionPane: ActionPane(
@@ -366,13 +363,34 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  child: const Icon(
-                    Icons.favorite_border,
-                    size: 16,
-                  ),
-                )
+                LikeAnimation(
+                  isAnimating: commentIndex["is_liked_comment"],
+                  smallLike: true,
+                  child: IconButton(
+                      onPressed: () async {
+                        await ApiPostCommentService()
+                            .likeComment(
+                                widget.postId,
+                                commentIndex["post_comment_id"],
+                                commentIndex["is_liked_comment"])
+                            .catchError((error) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(error.toString())));
+                        });
+                        setState(() {
+                          isLikeAnimating = false;
+                        });
+                      },
+                      icon: commentIndex["is_liked_comment"]
+                          ? const Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            )
+                          : const Icon(
+                              Icons.favorite_border_outlined,
+                              color: Colors.black,
+                            )),
+                ),
               ],
             ),
           ),

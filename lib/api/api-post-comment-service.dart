@@ -96,4 +96,37 @@ class ApiPostCommentService {
       throw responseBody["error_message"];
     }
   }
+
+  Future<void> likeComment(int postId, int commentId, bool is_liked) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+    if (is_liked == false) {
+      final responseLike = await http.post(
+        Uri.parse('$baseUrl/api/v1/post/$postId/comments/$commentId/likes'),
+        headers: headers,
+      );
+      var responseBody = jsonDecode(responseLike.body);
+      if (responseBody['status_code'] == 200) {
+        return responseBody;
+      } else {
+        throw responseBody["error_message"];
+      }
+    } else if (is_liked == true) {
+      final responseLike = await http.delete(
+        Uri.parse('$baseUrl/api/v1/post/$postId/comments/$commentId/likes'),
+        headers: headers,
+      );
+      var responseBody = jsonDecode(responseLike.body);
+      if (responseBody['status_code'] == 200) {
+        return responseBody;
+      } else {
+        throw responseBody["error_message"];
+      }
+    }
+  }
 }
