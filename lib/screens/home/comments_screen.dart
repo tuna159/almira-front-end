@@ -1,6 +1,7 @@
 import 'package:almira_front_end/api/api-post-comment-service.dart';
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/utils/colors.dart';
+import 'package:almira_front_end/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/utils/utils.dart' as utils;
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -18,6 +19,8 @@ class CommentsScreen extends StatefulWidget {
 class _CommentsScreenState extends State<CommentsScreen> {
   late Future futurePostComment;
   final TextEditingController commentEditingController =
+      TextEditingController();
+  final TextEditingController oldCommentEditingController =
       TextEditingController();
 
   late List listOfDataComments;
@@ -133,14 +136,185 @@ class _CommentsScreenState extends State<CommentsScreen> {
             children: [
               SlidableAction(
                 flex: 2,
-                onPressed: (context) {},
+                onPressed: (context) async {
+                  await ApiPostCommentService()
+                      .deleteComment(
+                          widget.postId, commentIndex["post_comment_id"])
+                      .then((value) async {})
+                      .catchError((error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(error.toString())));
+                  });
+                  setState(() {});
+                },
                 icon: Icons.delete,
                 backgroundColor: Colors.red,
                 label: 'Delete',
               ),
               SlidableAction(
                 flex: 2,
-                onPressed: (context) {},
+                onPressed: (context) async {
+                  oldCommentEditingController.text = commentIndex["content"];
+                  showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) => Dialog(
+                      child: Container(
+                        child: Scrollbar(
+                          thickness: 3,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            child: ListView(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                shrinkWrap: true,
+                                children: [
+                                  SingleChildScrollView(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Form(
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(10),
+                                              child: TextFormField(
+                                                controller:
+                                                    oldCommentEditingController,
+                                                autovalidateMode:
+                                                    AutovalidateMode
+                                                        .onUserInteraction,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                decoration:
+                                                    const InputDecoration(
+                                                        border:
+                                                            OutlineInputBorder(),
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide(
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          97,
+                                                                          95,
+                                                                          95)),
+                                                        ),
+                                                        labelText:
+                                                            'Edit Comment',
+                                                        labelStyle: TextStyle(
+                                                            fontFamily:
+                                                                'OpenSansMedium',
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    97,
+                                                                    95,
+                                                                    95))),
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 2),
+                                                  child: TextButton(
+                                                    onPressed: (() async {
+                                                      await ApiPostCommentService()
+                                                          .editComment(
+                                                              widget.postId,
+                                                              commentIndex[
+                                                                  "post_comment_id"],
+                                                              oldCommentEditingController
+                                                                  .text)
+                                                          .then((e) {
+                                                        Navigator.pop(context);
+                                                        setState(() {});
+                                                      }).catchError((error) {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(SnackBar(
+                                                                content: Text(error
+                                                                    .toString())));
+                                                      });
+                                                      setState(() {
+                                                        oldCommentEditingController
+                                                            .text = "";
+                                                      });
+                                                    }),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.green,
+                                                        border: Border.all(
+                                                          color: Colors.grey,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                      ),
+                                                      alignment:
+                                                          Alignment.center,
+                                                      width: 114,
+                                                      height: 27,
+                                                      child: const Text(
+                                                        "Edit",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 2),
+                                                  child: TextButton(
+                                                    onPressed: () async {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.blue,
+                                                        border: Border.all(
+                                                          color: Colors.grey,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                      ),
+                                                      alignment:
+                                                          Alignment.center,
+                                                      width: 114,
+                                                      height: 27,
+                                                      child: const Text(
+                                                        "Cancel",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ]),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
                 icon: Icons.edit,
                 backgroundColor: Colors.green,
                 label: 'Edit',

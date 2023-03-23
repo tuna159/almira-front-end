@@ -466,9 +466,6 @@ class _HomeAppState extends State<HomeApp> {
                               ),
                               TextSpan(
                                 text: " ${post["content"]}",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                ),
                               ),
                             ],
                           ),
