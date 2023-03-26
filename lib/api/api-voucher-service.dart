@@ -5,7 +5,7 @@ import 'package:almira_front_end/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class ApiVoucherService {
-  final String baseUrl = "http://192.168.1.45:3009";
+  final String baseUrl = "http://10.28.55.207:3009";
 
   Future getAllVoucher() async {
     String token = await getTokenFromSF();

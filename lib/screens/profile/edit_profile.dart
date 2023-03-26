@@ -17,14 +17,22 @@ import '../../utils/utils.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
 
-class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+class EditProfile extends StatefulWidget {
+  final avatar;
+  final userName;
+  final introduction;
+  const EditProfile({
+    Key? key,
+    required this.avatar,
+    required this.userName,
+    required this.introduction,
+  }) : super(key: key);
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  State<EditProfile> createState() => _EditProfileState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _EditProfileState extends State<EditProfile> {
   ApiUserService _apiUserService = ApiUserService();
 
   File? _image;
@@ -34,12 +42,17 @@ class _SignUpState extends State<SignUp> {
   String url =
       'https://icon-library.com/images/default-user-icon/default-user-icon-13.jpg';
 
-  TextEditingController emailController = TextEditingController();
   TextEditingController infomationController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    infomationController.text = widget.introduction;
+    userNameController.text = widget.userName;
+    super.initState();
+  }
 
   selectImage() async {
     File im = await pickCamera(ImageSource.gallery);
@@ -55,6 +68,33 @@ class _SignUpState extends State<SignUp> {
       key: _scaffoldState,
       appBar: AppBar(
         backgroundColor: defaultColor,
+        title: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(10),
+            child: const Text(
+              "Edit Profile",
+              style: TextStyle(fontSize: 20, fontFamily: 'OpenSansMedium'),
+            )),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_outlined),
+          onPressed: () {
+            Navigator.pop(context, "refresh");
+          },
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () async {
+              updateMe();
+            },
+            child: const Text(
+              "Done",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0),
+            ),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -73,15 +113,12 @@ class _SignUpState extends State<SignUp> {
                                 borderRadius: BorderRadius.circular(80),
                                 child: Image.file(
                                   _image!,
-                                  width: 450,
-                                  height: 450,
                                   fit: BoxFit.cover,
                                 ),
                               ))
-                          : const CircleAvatar(
+                          : CircleAvatar(
                               radius: 64,
-                              backgroundImage: NetworkImage(
-                                  'https://icon-library.com/images/default-user-icon/default-user-icon-13.jpg'),
+                              backgroundImage: NetworkImage(widget.avatar),
                             ),
                       Positioned(
                         bottom: -10,
@@ -94,26 +131,15 @@ class _SignUpState extends State<SignUp> {
                     ],
                   ),
                   Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(10),
-                      child: const Text(
-                        'Almira',
-                        style: TextStyle(fontSize: 32, fontFamily: 'BMDANIEL'),
-                      )),
-                  Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.all(10),
-                    child: const Text(
-                      'Sign up',
-                      style:
-                          TextStyle(fontSize: 20, fontFamily: 'OpenSansMedium'),
-                    ),
+                    child: const Text(''),
                   ),
                   Container(
                     padding: const EdgeInsets.all(10),
                     child: TextFormField(
                       validator: utils.requiredFieldEmail,
-                      controller: emailController,
+                      controller: userNameController,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
@@ -122,7 +148,7 @@ class _SignUpState extends State<SignUp> {
                           borderSide: BorderSide(
                               color: Color.fromARGB(255, 97, 95, 95)),
                         ),
-                        labelText: "Enter your email",
+                        labelText: "Enter your user name",
                         labelStyle: TextStyle(
                             fontFamily: 'OpenSansMedium',
                             color: Color.fromARGB(255, 97, 95, 95)),
@@ -133,85 +159,15 @@ class _SignUpState extends State<SignUp> {
                     padding: const EdgeInsets.all(10),
                     child: TextFormField(
                       validator: utils.requiredFieldUserName,
-                      controller: userNameController,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 97, 95, 95)),
-                          ),
-                          labelText: 'Enter your username',
-                          labelStyle: TextStyle(
-                              fontFamily: 'OpenSansMedium',
-                              color: Color.fromARGB(255, 97, 95, 95))),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: TextFormField(
-                      validator: utils.requiredFieldPassword,
-                      obscureText: true,
-                      controller: passwordController,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 97, 95, 95)),
-                        ),
-                        labelText: 'Enter your password',
-                        labelStyle: TextStyle(
-                            fontFamily: 'OpenSansMedium',
-                            color: Color.fromARGB(255, 97, 95, 95)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: TextFormField(
-                      obscureText: true,
-                      // controller: passwordController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'This field password can not be empty';
-                        }
-                        if (value != passwordController.text) {
-                          return 'Need to enter the correct password';
-                        }
-                        return null;
-                      },
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 97, 95, 95)),
-                        ),
-                        labelText: 'Enter confirm password',
-                        labelStyle: TextStyle(
-                            fontFamily: 'OpenSansMedium',
-                            color: Color.fromARGB(255, 97, 95, 95)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    child: TextFormField(
                       controller: infomationController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromARGB(255, 97, 95, 95)),
                           ),
-                          labelText: 'Enter infomation',
+                          labelText: 'Enter your infomation',
                           labelStyle: TextStyle(
                               fontFamily: 'OpenSansMedium',
                               color: Color.fromARGB(255, 97, 95, 95))),
@@ -220,22 +176,6 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Container(
-                      height: 50,
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: defaultColor,
-                        ),
-                        child: const Text(
-                          'Sign up',
-                          style: TextStyle(
-                              fontSize: 12, fontFamily: 'OpenSanssBold'),
-                        ),
-                        onPressed: () async {
-                          sigup();
-                        },
-                      )),
                 ],
               ),
             )),
@@ -243,11 +183,10 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  void sigup() async {
+  void updateMe() async {
     if (_formKey.currentState!.validate()) {
-      String email = emailController.text;
       String userName = userNameController.text;
-      String password = passwordController.text;
+      String infomation = infomationController.text;
       setState(() {
         isLoading = true;
       });
@@ -269,19 +208,9 @@ class _SignUpState extends State<SignUp> {
 
       try {
         await _apiUserService
-            .signUp(email, infomationController.text, userName, password, url)
-            .then((user) async {
-          String token = await getTokenFromSF();
-
-          Navigator.push(
-            this.context,
-            MaterialPageRoute(
-              builder: (context) => ResponsiveLayout(
-                token: token,
-              ),
-            ),
-          );
-        }).catchError((error) {
+            .updateMe(infomationController.text, userNameController.text, url)
+            .then((user) {})
+            .catchError((error) {
           ScaffoldMessenger.of(this.context)
               .showSnackBar(SnackBar(content: Text(error.toString())));
         });

@@ -1,6 +1,7 @@
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/screens/header/message_detail_page.dart';
-import 'package:almira_front_end/screens/home/voucher_list.dart';
+import 'package:almira_front_end/screens/profile/edit_profile.dart';
+import 'package:almira_front_end/screens/profile/voucher_list.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/enum.dart';
 import 'package:almira_front_end/utils/utils.dart';
@@ -74,10 +75,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : Scaffold(
             appBar: AppBar(
               backgroundColor: defaultColor,
-              title: Text(
-                snap['user_name'],
-              ),
-              automaticallyImplyLeading: false,
+              title: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    snap["user_name"],
+                    style:
+                        TextStyle(fontSize: 20, fontFamily: 'OpenSansMedium'),
+                  )),
+              leading: FutureBuilder(
+                  future: uid(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text("Something went wrong! $snapshot");
+                    } else if (snapshot.hasData) {
+                      return snapshot.data!
+                          ? Container()
+                          : IconButton(
+                              icon: const Icon(Icons.arrow_back_outlined),
+                              onPressed: () {
+                                Navigator.pop(context, "refresh");
+                              },
+                            );
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }),
               actions: [
                 FutureBuilder(
                     future: uid(),
@@ -176,7 +199,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   borderColor: Colors.grey,
                                                   text: "Edit Profile",
                                                   textColor: primaryColor,
-                                                  function: () {},
+                                                  function: () async {
+                                                    String refresh = await Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) => EditProfile(
+                                                                avatar: snap[
+                                                                    "avatar"],
+                                                                userName: snap[
+                                                                    "user_name"],
+                                                                introduction: snap[
+                                                                    "introduction"])));
+                                                    if (refresh == "refresh") {
+                                                      setState(() {});
+                                                    }
+                                                  },
                                                 )
                                               : isFollowing
                                                   ? CustomButton(
@@ -213,7 +250,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     ),
                                           snapshot.data!
                                               ? CustomButton(
-                                                  text: 'Point : ${11}',
+                                                  text:
+                                                      'Point : ${snap["total_points"]}',
                                                   backgroundColor: Colors.white,
                                                   textColor: Colors.black,
                                                   borderColor: Colors.grey,
@@ -292,7 +330,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           top: 1,
                         ),
                         child: Text(
-                          "bio",
+                          snap["introduction"],
                         ),
                       ),
                     ],

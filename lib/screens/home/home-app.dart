@@ -1,9 +1,9 @@
 import 'package:almira_front_end/api/api-gift-service.dart';
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/screens/header/message_page.dart';
-import 'package:almira_front_end/screens/home/comments_screen.dart';
-import 'package:almira_front_end/screens/home/edit_post_screen.dart';
-import 'package:almira_front_end/screens/home/gift_post.dart';
+import 'package:almira_front_end/screens/post/comments_screen.dart';
+import 'package:almira_front_end/screens/post/edit_post_screen.dart';
+import 'package:almira_front_end/screens/post/gift_post.dart';
 import 'package:almira_front_end/screens/home/profile_screen.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/text.dart';

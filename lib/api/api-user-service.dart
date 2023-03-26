@@ -6,7 +6,7 @@ import 'package:almira_front_end/model/user.dart';
 import 'package:http/http.dart' as http;
 
 class ApiUserService {
-  final String baseUrl = "http://192.168.1.45:3009";
+  final String baseUrl = "http://10.28.55.207:3009";
 
   var token = "";
 
@@ -174,6 +174,34 @@ class ApiUserService {
     if (responseBody['status_code'] == 200) {
       Map<String, dynamic> data = responseBody;
       return data["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future<void> updateMe(
+      String introduction, String userName, String imageUrl) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+    Map<String, String> body = {
+      'user_name': userName,
+      'image_url': imageUrl,
+      'introduction': introduction,
+    };
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/v1/me'),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody["data"];
     } else {
       throw responseBody["error_message"];
     }

@@ -121,7 +121,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
         listOfDataComments = comment["post_comment"];
         final commentIndex = listOfDataComments[index];
-        print(commentIndex["is_liked_comment"]);
 
         return Slidable(
           // startActionPane: ActionPane(
