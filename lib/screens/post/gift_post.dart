@@ -102,7 +102,12 @@ class _GiftsPostState extends State<GiftsPost> {
                 ),
                 Center(
                   child: ElevatedButton(
-                    child: Text("Send Gift"),
+                    child: Text(
+                      "Send Gift",
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: defaultColor,
+                    ),
                     onPressed: () async {
                       await ApiPostService()
                           .sendGiftPost(widget.postId, widget.uid, selectedCard)

@@ -28,6 +28,13 @@ String? requiredFieldPassword(String? valueP) {
   return null;
 }
 
+String? requiredFieldPhoneNumber(String? valueP) {
+  if (valueP == null || valueP.isEmpty) {
+    return 'This field phone number can not be empty';
+  }
+  return null;
+}
+
 addTokenToSF(String token) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('token', token);

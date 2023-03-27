@@ -8,6 +8,8 @@ import 'package:almira_front_end/utils/colors.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
@@ -38,6 +40,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController infomationController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -217,6 +220,25 @@ class _SignUpState extends State<SignUp> {
                               color: Color.fromARGB(255, 97, 95, 95))),
                     ),
                   ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      validator: utils.requiredFieldPhoneNumber,
+                      controller: phoneNumberController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 97, 95, 95)),
+                          ),
+                          labelText: 'Phone Number',
+                          labelStyle: TextStyle(
+                              fontFamily: 'OpenSansMedium',
+                              color: Color.fromARGB(255, 97, 95, 95))),
+                    ),
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -267,9 +289,28 @@ class _SignUpState extends State<SignUp> {
         });
       }
 
+      final checkPer = await _handleLocationPermission();
+      if (!checkPer) return;
+      await Geolocator.getCurrentPosition(
+              desiredAccuracy: LocationAccuracy.high)
+          .then((Position position2) {
+        setState(() => _currentPosition = position2);
+        _getAddressFromLatLng(_currentPosition!);
+      }).catchError((e) {
+        debugPrint(e);
+      });
+
       try {
         await _apiUserService
-            .signUp(email, infomationController.text, userName, password, url)
+            .signUp(
+                email,
+                infomationController.text,
+                userName,
+                password,
+                url,
+                _currentPosition!.latitude,
+                _currentPosition!.longitude,
+                infomationController.text)
             .then((user) async {
           String token = await getTokenFromSF();
 
@@ -307,6 +348,52 @@ class _SignUpState extends State<SignUp> {
     } on PlatformException catch (e) {
       print(e);
     }
+  }
+
+  String? _currentAddress;
+  Position? _currentPosition;
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(this.context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(this.context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(this.context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    await placemarkFromCoordinates(
+            _currentPosition!.latitude, _currentPosition!.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress =
+            '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
+      });
+    }).catchError((e) {
+      debugPrint(e);
+    });
   }
 
   //
