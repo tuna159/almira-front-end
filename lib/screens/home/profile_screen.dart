@@ -120,33 +120,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             itemBuilder: (context) => [
                               const PopupMenuItem(
                                 value: MenuItems.itemBlock,
-                                // child: Text('View List Expense')
                                 child: ListTile(
-                                  leading:
-                                      Icon(CupertinoIcons.clear_thick_circled),
+                                  leading: Icon(Icons.block_sharp),
                                   title: Text('Block '),
                                 ),
                               ),
                               const PopupMenuItem(
                                 value: MenuItems.itemUnblock,
-                                // child: Text('View List Expense')
                                 child: ListTile(
-                                  leading:
-                                      Icon(CupertinoIcons.clear_thick_circled),
+                                  leading: Icon(Icons.block),
                                   title: Text('Unblock '),
                                 ),
                               ),
                             ],
                           );
                         } else {
-                          return IconButton(
-                            icon: const Icon(Icons.logout),
-                            tooltip: 'Show Snackbar',
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('This is a snackbar')));
+                          return PopupMenuButton<MenuItems>(
+                            onSelected: (value) async {
+                              if (value == MenuItems.itemLogout) {
+                                //logout
+                              }
+                              if (value == MenuItems.itemUpdatePassword) {
+                                //update password
+                              }
                             },
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: MenuItems.itemBlock,
+                                child: ListTile(
+                                  leading: Icon(Icons.logout),
+                                  title: Text('Logout '),
+                                ),
+                              ),
+                              const PopupMenuItem(
+                                value: MenuItems.itemUnblock,
+                                child: ListTile(
+                                  leading: Icon(Icons.password),
+                                  title: Text('Update Password '),
+                                ),
+                              ),
+                            ],
                           );
                         }
                       } else {

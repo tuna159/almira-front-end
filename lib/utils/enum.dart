@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 
-enum MenuItems { itemBlock, itemUnblock }
+enum MenuItems { itemBlock, itemUnblock, itemLogout, itemUpdatePassword }
 
-const itemBlock = MenuItemCheck(
-  text: 'Block',
-  icon: Icons.delete,
-);
+// const itemBlock = MenuItemCheck(
+//   text: 'Block',
+//   icon: Icons.delete,
+// );
 
-const itemUnblock = MenuItemCheck(
-  text: 'Unblock',
-  icon: Icons.delete,
-);
+// const itemUnblock = MenuItemCheck(
+//   text: 'Unblock',
+//   icon: Icons.delete,
+// );
 
-class MenuItemCheck {
-  final String text;
-  final IconData icon;
+// class MenuItemCheck {
+//   final String text;
+//   final IconData icon;
 
-  const MenuItemCheck({
-    required this.text,
-    required this.icon,
-  });
-}
+//   const MenuItemCheck({
+//     required this.text,
+//     required this.icon,
+//   });
+// }

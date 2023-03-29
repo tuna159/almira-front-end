@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/utils.dart';
+import 'package:dropdownfield2/dropdownfield2.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +25,16 @@ class _AddPostScreenState extends State<AddPostScreen> {
   UploadTask? uploadImageCamera;
   ApiPostService _apiPostService = ApiPostService();
 
+  List<String> nameTrip = [
+    'Travel',
+    'Go camping',
+    'Partner meeting',
+    'Hang Out'
+  ];
+  String defaul = '';
+
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController postType = TextEditingController();
 
   _selectImage(BuildContext parentContext) async {
     return showDialog(
@@ -201,7 +211,68 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     },
                   ),
                 ),
-                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: 10,
+                  ),
+                  child: DropDownField(
+                    controller: postType,
+                    required: true,
+                    hintText: "Post Type",
+                    hintStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    enabled: true,
+                    items: nameTrip,
+                    onValueChanged: (value) {
+                      setState(() {
+                        defaul = value;
+                      });
+                    },
+                  ),
+                ),
+                Row(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(
+                        top: 1,
+                        left: 10,
+                      ),
+                      child: Text(
+                        "Post Type",
+                      ),
+                    ),
+                    SizedBox(
+                      width: 100,
+                    ),
+                    DropdownButton<String>(
+                      value: dropdownValue,
+                      elevation: 16,
+                      style: const TextStyle(color: Colors.deepPurple),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.deepPurpleAccent,
+                      ),
+                      onChanged: (String? value) {
+                        print(value);
+
+                        // This is called when the user selects an item.
+                        setState(() {
+                          dropdownValue = value!;
+                        });
+                      },
+                      items: postType1
+                          .map<DropdownMenuItem<String>>((String valueType) {
+                        return DropdownMenuItem<String>(
+                          value: valueType,
+                          child: Text(valueType),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                )
               ],
             ),
           );
@@ -218,4 +289,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
       print(e);
     }
   }
+
+  String dropdownValue = postType1.first;
 }
+
+List<String> postType1 = <String>['Pulic', 'Private', 'Friend'];
