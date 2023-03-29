@@ -1,6 +1,8 @@
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/screens/header/message_detail_page.dart';
 import 'package:almira_front_end/screens/profile/edit_profile.dart';
+import 'package:almira_front_end/screens/profile/list_follower.dart';
+import 'package:almira_front_end/screens/profile/list_following.dart';
 import 'package:almira_front_end/screens/profile/voucher_list.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/enum.dart';
@@ -177,9 +179,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    buildStatColumn(postLen, "posts"),
-                                    buildStatColumn(followers, "followers"),
-                                    buildStatColumn(following, "following"),
+                                    buildStatColumn(postLen, "posts", () {}),
+                                    buildStatColumn(followers, "followers", () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  FollowerList()));
+                                    }),
+                                    buildStatColumn(following, "following", () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  FollowingList()));
+                                    }),
                                   ],
                                 ),
                                 FutureBuilder(
@@ -377,16 +391,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
   }
 
-  Column buildStatColumn(int num, String label) {
+  Column buildStatColumn(int num, String label, Function()? function) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          num.toString(),
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+        SizedBox(
+          height: 33,
+          child: TextButton(
+            onPressed: function,
+            child: Text(
+              num.toString(),
+              style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
           ),
         ),
         Container(
