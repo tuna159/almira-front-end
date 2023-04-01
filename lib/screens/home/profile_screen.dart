@@ -3,7 +3,9 @@ import 'package:almira_front_end/screens/header/message_detail_page.dart';
 import 'package:almira_front_end/screens/profile/edit_profile.dart';
 import 'package:almira_front_end/screens/profile/list_follower.dart';
 import 'package:almira_front_end/screens/profile/list_following.dart';
+import 'package:almira_front_end/screens/profile/update-password.dart';
 import 'package:almira_front_end/screens/profile/voucher_list.dart';
+import 'package:almira_front_end/screens/welcome-app/welcome.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/enum.dart';
 import 'package:almira_front_end/utils/utils.dart';
@@ -113,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (snapshot.data! == false) {
                           return PopupMenuButton<MenuItems>(
                             onSelected: (value) async {
-                              if (value == MenuItems.itemBlock) {
+                              if (value == MenuItems.itemLogout) {
                                 showMyDialogBlockUser();
                               }
                             },
@@ -138,22 +140,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           return PopupMenuButton<MenuItems>(
                             onSelected: (value) async {
                               if (value == MenuItems.itemLogout) {
-                                //logout
+                                showMyDialogLogout();
                               }
                               if (value == MenuItems.itemUpdatePassword) {
-                                //update password
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const UpdatePassword(),
+                                  ),
+                                );
                               }
                             },
                             itemBuilder: (context) => [
                               const PopupMenuItem(
-                                value: MenuItems.itemBlock,
+                                value: MenuItems.itemLogout,
                                 child: ListTile(
                                   leading: Icon(Icons.logout),
                                   title: Text('Logout '),
                                 ),
                               ),
                               const PopupMenuItem(
-                                value: MenuItems.itemUnblock,
+                                value: MenuItems.itemUpdatePassword,
                                 child: ListTile(
                                   leading: Icon(Icons.password),
                                   title: Text('Update Password '),
@@ -475,5 +482,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       },
     );
+  }
+
+  Future<void> showMyDialogLogout() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm '),
+          // ignore: prefer_interpolation_to_compose_strings
+          content: Text('Do you want log out'),
+          actions: <Widget>[
+            TextButton(
+                onPressed: logout,
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(color: Colors.green),
+                )),
+            TextButton(
+              child: const Text('No', style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void logout() async {
+    await ApiUserService().logout().then((value) async {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const Welcome(),
+        ),
+      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Successful logout')));
+    }).catchError((error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.toString())));
+    });
+    setState(() {});
   }
 }

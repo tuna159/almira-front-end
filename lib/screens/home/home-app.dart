@@ -9,8 +9,10 @@ import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/text.dart';
 import 'package:almira_front_end/widgets/custom_button.dart';
 import 'package:almira_front_end/widgets/like_animation.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../utils/utils.dart';
 
@@ -28,6 +30,8 @@ class _HomeAppState extends State<HomeApp> {
   late Future futurePost;
   late List listOfGift;
   TextEditingController messageReportController = TextEditingController();
+  final controller = CarouselController();
+  int activeIndex = 0;
 
   int selectedCard = -1;
 
@@ -35,6 +39,13 @@ class _HomeAppState extends State<HomeApp> {
   void initState() {
     super.initState();
     ApiPostService().getPost();
+  }
+
+  Future<void> _refresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      ApiPostService().getPost();
+    });
   }
 
   @override
@@ -60,19 +71,22 @@ class _HomeAppState extends State<HomeApp> {
           ),
         ],
       ),
-      body: Center(
-        child: FutureBuilder(
-          future: ApiPostService().getPost(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Text("Something went wrong! $snapshot");
-            } else if (snapshot.hasData) {
-              final posts = snapshot.data!;
-              return buildListViewPost(posts);
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: Center(
+          child: FutureBuilder(
+            future: ApiPostService().getPost(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text("Something went wrong! $snapshot");
+              } else if (snapshot.hasData) {
+                final posts = snapshot.data!;
+                return buildListViewPost(posts);
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
         ),
       ),
     );
@@ -330,13 +344,52 @@ class _HomeAppState extends State<HomeApp> {
                     alignment: Alignment.center,
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.35,
-                        width: double.infinity,
-                        child: Image.network(
-                          postImage['image_url'],
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                            CarouselSlider.builder(
+                              options: CarouselOptions(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.6,
+                                enlargeCenterPage: true,
+                                viewportFraction: 1,
+                                enlargeStrategy:
+                                    CenterPageEnlargeStrategy.height,
+                                autoPlayInterval: const Duration(seconds: 2),
+                                onPageChanged: (index, reason) =>
+                                    setState(() => activeIndex = index),
+                              ),
+                              itemCount: listOfDataImage.length,
+                              itemBuilder: (context, index, realIndex) {
+                                final i = listOfDataImage[index];
+                                return Column(children: [
+                                  Expanded(
+                                    child: Image.network(
+                                      i["image_url"],
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                ]);
+                              },
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            AnimatedSmoothIndicator(
+                              activeIndex: activeIndex,
+                              count: listOfDataImage.length,
+                              effect: const JumpingDotEffect(
+                                dotHeight: 10,
+                                dotWidth: 10,
+                              ),
+                            )
+                          ])
+
+                          //  Image.network(
+                          //   postImage['image_url'],
+                          //   fit: BoxFit.cover,
+                          // ),
+                          ),
                       AnimatedOpacity(
                         duration: const Duration(
                           milliseconds: 200,

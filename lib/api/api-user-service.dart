@@ -216,4 +216,52 @@ class ApiUserService {
       throw responseBody["error_message"];
     }
   }
+
+  Future<void> logout() async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/v1/me/logout'),
+      headers: headers,
+    );
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future<void> updatePassword(String oldPassword, String newPassword) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> body = {
+      'oldPassword': oldPassword,
+      'newPassword': newPassword,
+    };
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/v1/me/profile/password'),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
 }
