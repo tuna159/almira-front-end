@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:almira_front_end/api/api-message-service.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/utils.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 
 class MessageDetailPage extends StatefulWidget {
   final String uid;
@@ -19,14 +25,23 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
   String userName = '';
   String userImage = '';
   late bool isLoading;
+  UploadTask? uploadImageCamera;
   var snap;
+  File? _image;
   final TextEditingController _contentController = TextEditingController();
   ApiMessageService _apiMessageService = ApiMessageService();
+  late List listOfMsImage;
 
   @override
   void initState() {
     super.initState();
     getUserData();
+  }
+
+  void clearImage() {
+    setState(() {
+      _image = null;
+    });
   }
 
   getUserData() async {
@@ -40,7 +55,7 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
       userImage = snap['user_data']["user_image"]["image_url"];
       setState(() {});
     } catch (e) {
-      showSnackBar(context, e.toString());
+      showSnackBar(this.context, e.toString());
     }
     setState(() {
       isLoading = true;
@@ -135,79 +150,146 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
                     }
                   },
                 ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Container(
-                    padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                    height: 60,
-                    width: double.infinity,
-                    color: Colors.white,
-                    child: Row(
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            decoration: BoxDecoration(
-                              color: Colors.lightBlue,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: FloatingActionButton(
-                              heroTag: "btn1",
-                              onPressed: () {},
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 23,
+                _image == null
+                    ? Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Container(
+                          padding:
+                              EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                          height: 60,
+                          width: double.infinity,
+                          color: Colors.white,
+                          child: Row(
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: () {},
+                                child: Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.lightBlue,
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: FloatingActionButton(
+                                    heroTag: "btn1",
+                                    onPressed: () => _selectImage(context),
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                      size: 23,
+                                    ),
+                                    backgroundColor: defaultColor,
+                                    elevation: 0,
+                                  ),
+                                ),
                               ),
-                              backgroundColor: defaultColor,
-                              elevation: 0,
-                            ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Expanded(
+                                child: TextField(
+                                  controller: _contentController,
+                                  decoration: const InputDecoration(
+                                      hintText: "Write message...",
+                                      hintStyle:
+                                          TextStyle(color: Colors.black54),
+                                      border: InputBorder.none),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              FloatingActionButton(
+                                heroTag: "btn2",
+                                onPressed: () async {
+                                  await _apiMessageService
+                                      .addNewMessage(
+                                          widget.uid, _contentController.text)
+                                      .then((value) {
+                                    setState(() {
+                                      _contentController.text = "";
+                                    });
+                                  }).catchError((error) {
+                                    ScaffoldMessenger.of(this.context)
+                                        .showSnackBar(SnackBar(
+                                            content: Text(error.toString())));
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                                backgroundColor: defaultColor,
+                                elevation: 0,
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Expanded(
-                          child: TextField(
-                            controller: _contentController,
-                            decoration: const InputDecoration(
-                                hintText: "Write message...",
-                                hintStyle: TextStyle(color: Colors.black54),
-                                border: InputBorder.none),
+                      )
+                    : Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Container(
+                          padding:
+                              EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                          height: 60,
+                          width: double.infinity,
+                          color: Colors.white,
+                          child: Row(
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: () {},
+                                child: Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.lightBlue,
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: SizedBox(
+                                      height: 60.0,
+                                      width: 60.0,
+                                      child: ClipRRect(
+                                        child: Image.file(
+                                          _image!,
+                                          width: 450,
+                                          height: 450,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Expanded(
+                                child: TextField(
+                                  controller: _contentController,
+                                  decoration: const InputDecoration(
+                                      hintText: "Write message...",
+                                      hintStyle:
+                                          TextStyle(color: Colors.black54),
+                                      border: InputBorder.none),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              FloatingActionButton(
+                                heroTag: "btn3",
+                                onPressed: sendMessageImage,
+                                child: Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                                backgroundColor: defaultColor,
+                                elevation: 0,
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        FloatingActionButton(
-                          heroTag: "btn2",
-                          onPressed: () async {
-                            await _apiMessageService
-                                .addNewMessage(
-                                    widget.uid, _contentController.text)
-                                .then((value) {
-                              setState(() {
-                                _contentController.text = "";
-                              });
-                            }).catchError((error) {
-                              ScaffoldMessenger.of(this.context).showSnackBar(
-                                  SnackBar(content: Text(error.toString())));
-                            });
-                          },
-                          child: Icon(
-                            Icons.send,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                          backgroundColor: defaultColor,
-                          elevation: 0,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ],
             ),
           );
@@ -220,6 +302,9 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
       padding: EdgeInsets.only(top: 10, bottom: 70),
       itemBuilder: (context, index) {
         final messagedetail = listOfData[index];
+        listOfMsImage = messagedetail["images"];
+        print(messagedetail["images"]);
+        // final imagems = listOfMsImage[0];
         return Container(
           padding:
               const EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
@@ -235,14 +320,118 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
                     : Colors.grey.shade200),
               ),
               padding: const EdgeInsets.all(16),
-              child: Text(
-                messagedetail["content"],
-                style: const TextStyle(fontSize: 15),
-              ),
+              child: _image == null
+                  ? Text(
+                      messagedetail["content"],
+                      style: const TextStyle(fontSize: 15),
+                    )
+                  : Column(children: [
+                      SizedBox(
+                        height: 60,
+                        width: 60,
+                        child: messagedetail["images"].length == 0
+                            ? Text(
+                                messagedetail["content"],
+                                style: const TextStyle(fontSize: 15),
+                              )
+                            : Image.network(listOfMsImage[0]["image_url"]),
+                      ),
+                      Text(
+                        messagedetail["content"],
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                    ]),
             ),
           ),
         );
       },
     );
+  }
+
+  _selectImage(BuildContext parentContext) async {
+    return showDialog(
+      context: parentContext,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Create a Post'),
+          children: <Widget>[
+            SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('Take a photo'),
+                onPressed: () async {
+                  Navigator.pop(context);
+                  File file = await pickCamera(ImageSource.camera);
+                  setState(() {
+                    _image = file;
+                  });
+                }),
+            SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('Choose from Gallery'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  File file = await pickCamera(ImageSource.gallery);
+                  setState(() {
+                    _image = file;
+                  });
+                }),
+            SimpleDialogOption(
+              padding: const EdgeInsets.all(20),
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Future pickCamera(ImageSource source) async {
+    try {
+      final ImagePicker _imagePicker = ImagePicker();
+      final image = await _imagePicker.pickImage(source: source);
+      if (image == null) return;
+      final imageTpr = File(image.path);
+      setState(() => this._image = imageTpr);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  void sendMessageImage() async {
+    String fileNamePickerCamera = basename(_image!.path);
+    final file = File(_image!.path);
+    final storageRef =
+        FirebaseStorage.instance.ref().child('posts/$fileNamePickerCamera');
+    uploadImageCamera = storageRef.putFile(file);
+
+    final snapshot = await uploadImageCamera!.whenComplete(() {});
+    final urlDowload = await snapshot.ref.getDownloadURL();
+    print('Dowload Link : $urlDowload ');
+    try {
+      {
+        await _apiMessageService
+            .addNewMessageImage(widget.uid, _contentController.text, urlDowload)
+            .then((value) {
+          setState(() {
+            _contentController.text = "";
+            clearImage();
+          });
+        }).catchError((error) {
+          ScaffoldMessenger.of(this.context)
+              .showSnackBar(SnackBar(content: Text(error.toString())));
+        });
+      }
+    } catch (err) {
+      setState(() {
+        isLoading = false;
+      });
+      showSnackBar(
+        this.context,
+        err.toString(),
+      );
+    }
   }
 }

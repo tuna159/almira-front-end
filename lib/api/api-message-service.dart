@@ -51,7 +51,10 @@ class ApiMessageService {
     }
   }
 
-  Future<void> addNewMessage(String uid, String content) async {
+  Future<void> addNewMessage(
+    String uid,
+    String content,
+  ) async {
     String token = await getTokenFromSF();
 
     Map<String, String> headers = {
@@ -60,7 +63,40 @@ class ApiMessageService {
       HttpHeaders.authorizationHeader: 'Bearer $token'
     };
 
-    Map<String, String> body = {'user_id': uid, 'content': content};
+    Map<String, String> body = {
+      'user_id': uid,
+      'content': content,
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/v1/message'),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody;
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future<void> addNewMessageImage(
+      String uid, String content, String image_url) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    Map<String, String> body = {
+      'user_id': uid,
+      'content': content,
+      'image_url': image_url
+    };
 
     final response = await http.post(
       Uri.parse('$baseUrl/api/v1/message'),
