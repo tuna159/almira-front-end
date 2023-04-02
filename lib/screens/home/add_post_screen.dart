@@ -24,6 +24,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   bool isLoading = false;
   UploadTask? uploadImageCamera;
   ApiPostService _apiPostService = ApiPostService();
+  int postTypePost = 0;
 
   List<String> nameTrip = [
     'Travel',
@@ -35,6 +36,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController postType = TextEditingController();
+  String dropdownValue = postType1.first;
+  String valueType = '';
 
   _selectImage(BuildContext parentContext) async {
     return showDialog(
@@ -77,6 +80,22 @@ class _AddPostScreenState extends State<AddPostScreen> {
   }
 
   void postImage() async {
+    if (dropdownValue == "Public") {
+      setState(() {
+        postTypePost = 0;
+      });
+    } else if (dropdownValue == "Friend") {
+      setState(() {
+        postTypePost = 1;
+      });
+    } else {
+      setState(() {
+        postTypePost = 2;
+      });
+    }
+
+    print(postTypePost);
+
     setState(() {
       isLoading = true;
     });
@@ -94,7 +113,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
     try {
       // upload to storage and db
       await _apiPostService
-          .addNewPost(_descriptionController.text, urlDowload, _toggledCheck)
+          .addNewPost(_descriptionController.text, urlDowload, _toggledCheck,
+              postTypePost)
           .then((value) {
         setState(() {
           isLoading = false;
@@ -211,27 +231,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 10,
-                  ),
-                  child: DropDownField(
-                    controller: postType,
-                    required: true,
-                    hintText: "Post Type",
-                    hintStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                    enabled: true,
-                    items: nameTrip,
-                    onValueChanged: (value) {
-                      setState(() {
-                        defaul = value;
-                      });
-                    },
-                  ),
-                ),
                 Row(
                   children: [
                     Container(
@@ -256,11 +255,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         color: Colors.deepPurpleAccent,
                       ),
                       onChanged: (String? value) {
-                        print(value);
-
                         // This is called when the user selects an item.
                         setState(() {
                           dropdownValue = value!;
+                          valueType = value;
                         });
                       },
                       items: postType1
@@ -289,8 +287,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
       print(e);
     }
   }
-
-  String dropdownValue = postType1.first;
 }
 
-List<String> postType1 = <String>['Pulic', 'Private', 'Friend'];
+List<String> postType1 = <String>['Public', 'Friend', 'Private'];

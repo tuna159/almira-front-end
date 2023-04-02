@@ -85,7 +85,11 @@ class ApiPostService {
   }
 
   Future<void> addNewPost(
-      String content, String image_url, bool is_incognito) async {
+    String content,
+    String image_url,
+    bool is_incognito,
+    int postType,
+  ) async {
     String token = await getTokenFromSF();
 
     List<dynamic> images = [
@@ -106,8 +110,12 @@ class ApiPostService {
     final response = await http.post(
       Uri.parse('$baseUrl/api/v1/post'),
       headers: headers,
-      body: json.encode(
-          {'content': content, 'images': images, 'is_incognito': is_incognito}),
+      body: json.encode({
+        'content': content,
+        'images': images,
+        'is_incognito': is_incognito,
+        'post_type': postType
+      }),
     );
 
     var responseBody = jsonDecode(response.body);
