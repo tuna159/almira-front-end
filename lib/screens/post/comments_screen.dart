@@ -1,10 +1,8 @@
 import 'package:almira_front_end/api/api-post-comment-service.dart';
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/utils/colors.dart';
-import 'package:almira_front_end/widgets/custom_button.dart';
 import 'package:almira_front_end/widgets/like_animation.dart';
 import 'package:flutter/material.dart';
-import 'package:almira_front_end/utils/utils.dart' as utils;
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class CommentsScreen extends StatefulWidget {

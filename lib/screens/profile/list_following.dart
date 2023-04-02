@@ -1,21 +1,23 @@
-import 'package:almira_front_end/api/api-activity-service.dart';
+import 'package:almira_front_end/api/api-user-service.dart';
+import 'package:almira_front_end/screens/home/profile_screen.dart';
 import 'package:almira_front_end/utils/colors.dart';
+import 'package:almira_front_end/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
-class FollowerList extends StatefulWidget {
-  const FollowerList({super.key});
+class FollowingList extends StatefulWidget {
+  final String uid;
+  const FollowingList({Key? key, required this.uid}) : super(key: key);
 
   @override
-  State<FollowerList> createState() => _FollowerListState();
+  State<FollowingList> createState() => _FollowingListState();
 }
 
-class _FollowerListState extends State<FollowerList> {
-  late Future futureActivity;
-  late List listOfDataImage;
-
+class _FollowingListState extends State<FollowingList> {
+  late List listFollowing;
+  bool isFollowing = false;
+  late bool isLoading;
   @override
   void initState() {
-    futureActivity = ApiActivityService().getActivity();
     super.initState();
   }
 
@@ -23,77 +25,91 @@ class _FollowerListState extends State<FollowerList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FollowerList'),
+        title: const Text('FollowingList'),
         backgroundColor: defaultColor,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_outlined),
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+        ),
       ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-            ),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                    horizontal: 16,
-                  ).copyWith(right: 8),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundImage: NetworkImage(
-                            "https://znews-photo.zingcdn.me/w660/Uploaded/qhj_yvobvhfwbv/2018_07_18/Nguyen_Huy_Binh1.jpg"),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text("user_name"),
-                      SizedBox(
-                        width: 180,
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          showDialog(
-                            useRootNavigator: false,
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                child: ListView(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16),
-                                    shrinkWrap: true,
-                                    children: [
-                                      'Delete',
-                                    ]
-                                        .map(
-                                          (e) => InkWell(
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                        horizontal: 16),
-                                                child: Text(e),
-                                              ),
-                                              onTap: () {}),
-                                        )
-                                        .toList()),
-                              );
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.more_vert),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
+      body: FutureBuilder(
+        future: ApiUserService().getAllFollowing(widget.uid),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Something went wrong! $snapshot");
+          } else if (snapshot.hasData) {
+            final following = snapshot.data!;
+            return buildListViewFollowing(following);
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
         },
       ),
+    );
+  }
+
+  ListView buildListViewFollowing(List listFollowing) {
+    return ListView.builder(
+      itemCount: listFollowing.length,
+      itemBuilder: (context, index) {
+        final following = listFollowing[index];
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 10,
+          ),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 4,
+                  horizontal: 16,
+                ).copyWith(right: 8),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: (() {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ProfileScreen(
+                              uid: following["user_id"],
+                            ),
+                          ),
+                        );
+                      }),
+                      child: CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(following["avatar"]),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    SizedBox(
+                      width: 150,
+                      child: Text(following["nick_name"]),
+                    ),
+                    following["is_following"]
+                        ? CustomButton(
+                            text: 'Unfollow',
+                            backgroundColor: Colors.white,
+                            textColor: Colors.black,
+                            borderColor: Colors.grey,
+                            function: () async {
+                              await ApiUserService()
+                                  .unfollowUser(following["user_id"]);
+                              setState(() {});
+                            },
+                          )
+                        : Container(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

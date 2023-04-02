@@ -163,6 +163,28 @@ class ApiUserService {
     }
   }
 
+  Future unfollowerUser(String uid) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/v1/user/$uid/unfollower'),
+      headers: headers,
+    );
+    var responseBody = jsonDecode(response.body);
+
+    if (responseBody['status_code'] == 200) {
+      Map<String, dynamic> data = responseBody;
+      return data["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
   Future blockUser(String uid) async {
     String token = await getTokenFromSF();
 
@@ -256,6 +278,48 @@ class ApiUserService {
       Uri.parse('$baseUrl/api/v1/me/profile/password'),
       headers: headers,
       body: jsonEncode(body),
+    );
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future getAllFollowing(String uid) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/v1/follow/$uid/following'),
+      headers: headers,
+    );
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future getAllFollower(String uid) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/v1/follow/$uid/follower'),
+      headers: headers,
     );
     var responseBody = jsonDecode(response.body);
     if (responseBody['status_code'] == 200) {

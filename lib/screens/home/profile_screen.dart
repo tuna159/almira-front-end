@@ -10,7 +10,6 @@ import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/enum.dart';
 import 'package:almira_front_end/utils/utils.dart';
 import 'package:almira_front_end/widgets/custom_button.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -200,19 +199,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     buildStatColumn(postLen, "posts", () {}),
-                                    buildStatColumn(followers, "followers", () {
+                                    buildStatColumn(followers, "followers",
+                                        () async {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  FollowerList()));
+                                                  FollowerList(
+                                                      uid: widget.uid))).then(
+                                          (val) => val ? getUserData() : null);
+                                      // ignore: use_build_context_synchronously
                                     }),
-                                    buildStatColumn(following, "following", () {
-                                      Navigator.push(
+                                    buildStatColumn(following, "following",
+                                        () async {
+                                      await Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  FollowingList()));
+                                                  FollowingList(
+                                                      uid: widget.uid))).then(
+                                          (val) => val ? getUserData() : null);
                                     }),
                                   ],
                                 ),
