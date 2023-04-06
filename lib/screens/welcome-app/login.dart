@@ -1,6 +1,7 @@
 import 'package:almira_front_end/api/api-user-service.dart';
 import 'package:almira_front_end/responsive/responsive_layout.dart';
 import 'package:almira_front_end/routes/routes.dart';
+import 'package:almira_front_end/screens/forgot-password/forgot_password.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:almira_front_end/utils/utils.dart' as utils;
@@ -98,13 +99,21 @@ class _LoginState extends State<Login> {
                       onPressed: () {
                         //forgot password screen
                       },
-                      child: const Text(
-                        'Forgot Password',
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: Color.fromARGB(255, 4, 191, 182),
-                            fontFamily: 'OpenSansMedium'),
-                      ),
+                      child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForgotPasswordScreen()),
+                            );
+                          },
+                          child: const Text(
+                            'Forgot Password',
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Color.fromARGB(255, 4, 191, 182),
+                                fontFamily: 'OpenSansMedium'),
+                          )),
                     ),
                     Container(
                         height: 50,
@@ -167,7 +176,6 @@ class _LoginState extends State<Login> {
             ),
           ),
         );
-        ;
       }).catchError((error) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(error.toString())));

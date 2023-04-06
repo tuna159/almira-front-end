@@ -313,35 +313,58 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
                 ? Alignment.topRight
                 : Alignment.topLeft),
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: (messagedetail["is_sent"]
-                    ? Color.fromARGB(255, 101, 133, 238)
-                    : Colors.grey.shade200),
-              ),
-              padding: const EdgeInsets.all(16),
-              child: _image == null
-                  ? Text(
-                      messagedetail["content"],
-                      style: const TextStyle(fontSize: 15),
-                    )
-                  : Column(children: [
-                      SizedBox(
-                        height: 60,
-                        width: 60,
-                        child: messagedetail["images"].length == 0
-                            ? Text(
-                                messagedetail["content"],
-                                style: const TextStyle(fontSize: 15),
-                              )
-                            : Image.network(listOfMsImage[0]["image_url"]),
-                      ),
-                      Text(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: (messagedetail["is_sent"]
+                      ? Color.fromARGB(255, 101, 133, 238)
+                      : Colors.grey.shade200),
+                ),
+                padding: const EdgeInsets.all(16),
+                child:
+                    // Text(
+                    //   messagedetail["content"],
+                    //   style: const TextStyle(fontSize: 15),
+                    // )
+                    Column(
+                  children: <Widget>[
+                    SizedBox(
+                      width: 60,
+                      child: messagedetail["images"].length == 0
+                          ? Container()
+                          : Image.network(listOfMsImage[0]["image_url"],
+                              fit: BoxFit.cover),
+                    ),
+                    SizedBox(
+                      child: Text(
                         messagedetail["content"],
-                        style: const TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 16),
                       ),
-                    ]),
-            ),
+                    )
+                  ],
+                )
+
+                // child: _image == null
+                //     ? Text(
+                //         messagedetail["content"],
+                //         style: const TextStyle(fontSize: 15),
+                //       )
+                //     : Column(children: [
+                //         SizedBox(
+                //           height: 60,
+                //           width: 60,
+                //           child: messagedetail["images"].length == 0
+                //               ? Text(
+                //                   messagedetail["content"],
+                //                   style: const TextStyle(fontSize: 15),
+                //                 )
+                //               : Image.network(listOfMsImage[0]["image_url"]),
+                //         ),
+                //         Text(
+                //           messagedetail["content"],
+                //           style: const TextStyle(fontSize: 15),
+                //         ),
+                //       ]),
+                ),
           ),
         );
       },

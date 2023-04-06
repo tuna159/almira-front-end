@@ -328,4 +328,98 @@ class ApiUserService {
       throw responseBody["error_message"];
     }
   }
+
+  Future forgotPassword(String phoneNumber) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> body = {
+      'phone_number': phoneNumber,
+    };
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/v1/user/forgot-password'),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future verifyPassword(int otp) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/v1/user/verify'),
+      headers: headers,
+      body: jsonEncode({
+        'OTP': otp,
+      }),
+    );
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future resetPassword(String userId, String password) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> body = {'user_id': userId, 'password': password};
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/v1/user/reset-password'),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
+
+  Future redeemVoucher(int voucherId) async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/v1/me/redeem-voucher'),
+      headers: headers,
+      body: jsonEncode({'voucher_id': voucherId}),
+    );
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
 }
