@@ -63,26 +63,3 @@ decrypToken(String token) {
   Map<String, dynamic> payload = Jwt.parseJwt(token);
   return payload["user_id"];
 }
-
-// class UtilSharedPreferences {
-//   static Future<String> getToken() async {
-//     SharedPreferences _prefs = await SharedPreferences.getInstance();
-//     return _prefs.getString('token') ?? '';
-//   }
-
-//   static Future setToken(String value) async {
-//     SharedPreferences _prefs = await SharedPreferences.getInstance();
-//     return _prefs.setString('token', value);
-//   }
-// }
-
-
-// pickImage(ImageSource source) async {
-//   final ImagePicker _imagePicker = ImagePicker();
-//   final image = await _imagePicker.pickImage(source: source);
-//   if (image == null) {
-//     return;
-//   }
-//   return image = File(image.path);
-//   print('No Image Selected');
-// }

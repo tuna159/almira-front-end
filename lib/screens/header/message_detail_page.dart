@@ -304,7 +304,6 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
         final messagedetail = listOfData[index];
         listOfMsImage = messagedetail["images"];
         print(messagedetail["images"]);
-        // final imagems = listOfMsImage[0];
         return Container(
           padding:
               const EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),

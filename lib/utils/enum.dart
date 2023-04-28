@@ -9,23 +9,3 @@ enum MenuItems {
   itemrRechargePoints,
   itemRecommandUser,
 }
-
-// const itemBlock = MenuItemCheck(
-//   text: 'Block',
-//   icon: Icons.delete,
-// );
-
-// const itemUnblock = MenuItemCheck(
-//   text: 'Unblock',
-//   icon: Icons.delete,
-// );
-
-// class MenuItemCheck {
-//   final String text;
-//   final IconData icon;
-
-//   const MenuItemCheck({
-//     required this.text,
-//     required this.icon,
-//   });
-// }

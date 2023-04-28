@@ -99,20 +99,6 @@ class _RecommandUserState extends State<RecommandUser> {
           );
         },
       ),
-
-      // FutureBuilder(
-      //   future: ApiUserService().getAllFollowing(widget.uid),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.hasError) {
-      //       return Text("Something went wrong! $snapshot");
-      //     } else if (snapshot.hasData) {
-      //       final following = snapshot.data!;
-      //       return buildListViewFollowing(following);
-      //     } else {
-      //       return const Center(child: CircularProgressIndicator());
-      //     }
-      //   },
-      // ),
     );
   }
 

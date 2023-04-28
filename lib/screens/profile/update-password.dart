@@ -22,8 +22,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   final _confirmPasswordController = TextEditingController();
 
   Future<void> _updatePassword() async {
-    // final currentUser = FirebaseAuth.instance.currentUser;
-
     final oldPassword = _oldPasswordController.text;
     final newPassword = _newPasswordController.text;
     final confirmPassword = _confirmPasswordController.text;

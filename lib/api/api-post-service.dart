@@ -102,11 +102,6 @@ class ApiPostService {
       HttpHeaders.authorizationHeader: 'Bearer $token'
     };
 
-    // Map<String, String> body = {
-    //   'content': content,
-    //   'images': json.encode(images),
-    // };
-
     final response = await http.post(
       Uri.parse('$baseUrl/api/v1/post'),
       headers: headers,
@@ -187,11 +182,6 @@ class ApiPostService {
       'Accept': '*/*',
       HttpHeaders.authorizationHeader: 'Bearer $token'
     };
-
-    // Map<String, String> body = {
-    //   'content': content,
-    //   'images': json.encode(images),
-    // };
 
     final response = await http.put(
       Uri.parse('$baseUrl/api/v1/post/$id'),

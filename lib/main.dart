@@ -21,7 +21,6 @@ class ApplicationNetWork extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // dotenv.load(fileName: ".env");
     return MaterialApp(
       routes: {
         RouteNames.Welcome: (context) => const Welcome(),
@@ -31,7 +30,6 @@ class ApplicationNetWork extends StatelessWidget {
       },
       debugShowCheckedModeBanner: false,
       initialRoute: RouteNames.Welcome,
-      // home: Welcome(),
     );
   }
 }
