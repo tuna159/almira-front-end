@@ -310,7 +310,7 @@ class _SignUpState extends State<SignUp> {
                 url,
                 _currentPosition!.latitude,
                 _currentPosition!.longitude,
-                infomationController.text)
+                phoneNumberController.text)
             .then((user) async {
           String token = await getTokenFromSF();
 

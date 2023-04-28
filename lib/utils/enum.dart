@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
-enum MenuItems { itemBlock, itemUnblock, itemLogout, itemUpdatePassword }
+enum MenuItems {
+  itemBlock,
+  itemUnblock,
+  itemLogout,
+  itemUpdatePassword,
+  itemViewListShop,
+  itemrRechargePoints,
+  itemRecommandUser,
+}
 
 // const itemBlock = MenuItemCheck(
 //   text: 'Block',

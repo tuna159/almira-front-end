@@ -78,7 +78,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   void forgotPassword() {
     if (_formKey.currentState!.validate()) {
       String phoneNumber = phoneNumberController.text;
-
+      print(phoneNumber);
       _apiUserService.forgotPassword(phoneNumber).then((user) async {
         print(user);
         Navigator.push(

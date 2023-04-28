@@ -80,7 +80,7 @@ class _FollowerListState extends State<FollowerList> {
                       ),
                     ),
                     SizedBox(
-                      width: 20,
+                      width: 10,
                     ),
                     SizedBox(
                       width: 250,

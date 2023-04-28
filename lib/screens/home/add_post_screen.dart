@@ -26,14 +26,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
   ApiPostService _apiPostService = ApiPostService();
   int postTypePost = 0;
 
-  List<String> nameTrip = [
-    'Travel',
-    'Go camping',
-    'Partner meeting',
-    'Hang Out'
-  ];
-  String defaul = '';
-
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController postType = TextEditingController();
   String dropdownValue = postType1.first;
@@ -84,7 +76,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       setState(() {
         postTypePost = 0;
       });
-    } else if (dropdownValue == "Friend") {
+    } else if (dropdownValue == "Friends") {
       setState(() {
         postTypePost = 1;
       });
@@ -221,15 +213,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: SwitchListTile(
-                    title: const Text("Only me mode"),
-                    value: _toggledCheck,
-                    onChanged: (bool value) {
-                      setState(() => _toggledCheck = value);
-                    },
-                  ),
+                SizedBox(
+                  width: 10,
                 ),
                 Row(
                   children: [
@@ -240,11 +225,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         left: 10,
                       ),
                       child: Text(
-                        "Post Type",
+                        "Select audience",
                       ),
                     ),
                     SizedBox(
-                      width: 100,
+                      width: 10,
                     ),
                     DropdownButton<String>(
                       value: dropdownValue,
@@ -289,4 +274,4 @@ class _AddPostScreenState extends State<AddPostScreen> {
   }
 }
 
-List<String> postType1 = <String>['Public', 'Friend', 'Private'];
+List<String> postType1 = <String>['Public', 'Friends', 'Only Me'];

@@ -3,6 +3,9 @@ import 'package:almira_front_end/screens/header/message_detail_page.dart';
 import 'package:almira_front_end/screens/profile/edit_profile.dart';
 import 'package:almira_front_end/screens/profile/list_follower.dart';
 import 'package:almira_front_end/screens/profile/list_following.dart';
+import 'package:almira_front_end/screens/profile/list_shop.dart';
+import 'package:almira_front_end/screens/profile/recharge_points.dart';
+import 'package:almira_front_end/screens/profile/recommand_user.dart';
 import 'package:almira_front_end/screens/profile/update-password.dart';
 import 'package:almira_front_end/screens/profile/voucher_list.dart';
 import 'package:almira_front_end/screens/welcome-app/welcome.dart';
@@ -122,14 +125,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               const PopupMenuItem(
                                 value: MenuItems.itemBlock,
                                 child: ListTile(
-                                  leading: Icon(Icons.block_sharp),
                                   title: Text('Block '),
                                 ),
                               ),
                               const PopupMenuItem(
                                 value: MenuItems.itemUnblock,
                                 child: ListTile(
-                                  leading: Icon(Icons.block),
                                   title: Text('Unblock '),
                                 ),
                               ),
@@ -149,6 +150,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                 );
                               }
+                              if (value == MenuItems.itemViewListShop) {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => ShopList(),
+                                  ),
+                                );
+                              }
+                              if (value == MenuItems.itemrRechargePoints) {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => RechargePoints(),
+                                  ),
+                                );
+                              }
+                              if (value == MenuItems.itemRecommandUser) {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => RecommandUser(),
+                                  ),
+                                );
+                              }
                             },
                             itemBuilder: (context) => [
                               const PopupMenuItem(
@@ -163,6 +185,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 child: ListTile(
                                   leading: Icon(Icons.password),
                                   title: Text('Update Password '),
+                                ),
+                              ),
+                              const PopupMenuItem(
+                                value: MenuItems.itemViewListShop,
+                                child: ListTile(
+                                  leading: Icon(Icons.add_shopping_cart_sharp),
+                                  title: Text('List Shop '),
+                                ),
+                              ),
+                              const PopupMenuItem(
+                                value: MenuItems.itemrRechargePoints,
+                                child: ListTile(
+                                  leading: Icon(Icons.atm_outlined),
+                                  title: Text('Recharge Point '),
+                                ),
+                              ),
+                              const PopupMenuItem(
+                                value: MenuItems.itemRecommandUser,
+                                child: ListTile(
+                                  leading: Icon(Icons.person_add_alt_rounded),
+                                  title: Text('Recommand User'),
                                 ),
                               ),
                             ],

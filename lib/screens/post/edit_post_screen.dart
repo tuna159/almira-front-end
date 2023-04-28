@@ -6,13 +6,11 @@ import 'package:flutter/material.dart';
 class EditPostScreen extends StatefulWidget {
   final postId;
   final content;
-  final is_incognito;
   final String imageUrl;
   const EditPostScreen(
       {Key? key,
       required this.postId,
       required this.content,
-      required this.is_incognito,
       required this.imageUrl})
       : super(key: key);
 
@@ -24,13 +22,14 @@ class _EditPostScreenState extends State<EditPostScreen> {
   bool toggled = false;
   bool isLoading = false;
   ApiPostService _apiPostService = ApiPostService();
+  String dropdownValue = postType1.first;
+  String valueType = '';
 
   final TextEditingController _descriptionController = TextEditingController();
 
   @override
   void initState() {
     _descriptionController.text = widget.content;
-    toggled = widget.is_incognito;
 
     super.initState();
   }
@@ -112,15 +111,45 @@ class _EditPostScreenState extends State<EditPostScreen> {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: SwitchListTile(
-              title: const Text("Only me mode"),
-              value: toggled,
-              onChanged: (bool value) {
-                setState(() => toggled = value);
-              },
-            ),
+          Row(
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.only(
+                  top: 1,
+                  left: 10,
+                ),
+                child: Text(
+                  "Select audience",
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              DropdownButton<String>(
+                value: dropdownValue,
+                elevation: 16,
+                style: const TextStyle(color: Colors.deepPurple),
+                underline: Container(
+                  height: 2,
+                  color: Colors.deepPurpleAccent,
+                ),
+                onChanged: (String? value) {
+                  // This is called when the user selects an item.
+                  setState(() {
+                    dropdownValue = value!;
+                    valueType = value;
+                  });
+                },
+                items:
+                    postType1.map<DropdownMenuItem<String>>((String valueType) {
+                  return DropdownMenuItem<String>(
+                    value: valueType,
+                    child: Text(valueType),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
           const Divider(),
         ],
@@ -128,3 +157,5 @@ class _EditPostScreenState extends State<EditPostScreen> {
     );
   }
 }
+
+List<String> postType1 = <String>['Public', 'Friends', 'Only Me'];

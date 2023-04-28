@@ -210,8 +210,6 @@ class _HomeAppState extends State<HomeApp> {
                                                                     "post_id"],
                                                                 content: post[
                                                                     "content"],
-                                                                is_incognito: post[
-                                                                    "is_incognito"],
                                                                 imageUrl: postImage[
                                                                     'image_url'],
                                                               ),

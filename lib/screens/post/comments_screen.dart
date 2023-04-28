@@ -99,7 +99,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   child: const Text(
-                    'Post',
+                    'Comment',
                     style: TextStyle(color: defaultColor),
                   ),
                 ),
@@ -249,7 +249,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                                       ),
                                                       alignment:
                                                           Alignment.center,
-                                                      width: 114,
+                                                      width: 100,
                                                       height: 27,
                                                       child: const Text(
                                                         "Edit",
@@ -282,7 +282,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                                       ),
                                                       alignment:
                                                           Alignment.center,
-                                                      width: 114,
+                                                      width: 100,
                                                       height: 27,
                                                       child: const Text(
                                                         "Cancel",
