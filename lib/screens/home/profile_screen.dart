@@ -429,27 +429,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       final data = snapshot.data!;
                       final posts = data["post"];
                       late List listPost = posts;
-
-                      return GridView.builder(
-                        shrinkWrap: true,
-                        itemCount: listPost.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 1.5,
-                          childAspectRatio: 1,
-                        ),
-                        itemBuilder: (context, index) {
-                          final post = listPost[index];
-                          late List listOfDataImage = post["image"];
-                          final postImage = listOfDataImage[0];
-                          return Image(
-                            image: NetworkImage(postImage['image_url']),
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      );
+                      if (posts == null) {
+                        return Container();
+                      } else {
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          itemCount: listPost.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 5,
+                            mainAxisSpacing: 1.5,
+                            childAspectRatio: 1,
+                          ),
+                          itemBuilder: (context, index) {
+                            final post = listPost[index];
+                            late List listOfDataImage = post["image"];
+                            final postImage = listOfDataImage[0];
+                            return Image(
+                              image: NetworkImage(postImage['image_url']),
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        );
+                      }
                     } else {
                       return const Center(child: CircularProgressIndicator());
                     }

@@ -86,7 +86,7 @@ class ApiPostService {
 
   Future<void> addNewPost(
     String content,
-    String image_url,
+    List<String> image_url,
     bool is_incognito,
     int postType,
   ) async {
@@ -107,7 +107,7 @@ class ApiPostService {
       headers: headers,
       body: json.encode({
         'content': content,
-        'images': images,
+        'images': image_url.map((url) => {'image_url': url}).toList(),
         'is_incognito': is_incognito,
         'post_type': postType
       }),

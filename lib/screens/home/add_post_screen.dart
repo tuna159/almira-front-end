@@ -18,13 +18,13 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
-  // Uint8List? _file;
   bool _toggledCheck = false;
-  File? _image;
+  List<XFile>? _imageFiles;
+  List<String> _downloadUrls = [];
   bool isLoading = false;
-  UploadTask? uploadImageCamera;
   ApiPostService _apiPostService = ApiPostService();
   int postTypePost = 0;
+  final url = '';
 
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController postType = TextEditingController();
@@ -43,19 +43,21 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 child: const Text('Take a photo'),
                 onPressed: () async {
                   Navigator.pop(context);
-                  File file = await pickCamera(ImageSource.camera);
-                  setState(() {
-                    _image = file;
-                  });
+                  final pickedFile =
+                      await ImagePicker().pickImage(source: ImageSource.camera);
+                  if (pickedFile != null) {
+                    setState(() {
+                      _imageFiles = [pickedFile];
+                    });
+                  }
                 }),
             SimpleDialogOption(
                 padding: const EdgeInsets.all(20),
                 child: const Text('Choose from Gallery'),
                 onPressed: () async {
-                  Navigator.of(context).pop();
-                  File file = await pickCamera(ImageSource.gallery);
+                  final pickedFiles = await ImagePicker().pickMultiImage();
                   setState(() {
-                    _image = file;
+                    _imageFiles = pickedFiles;
                   });
                 }),
             SimpleDialogOption(
@@ -92,20 +94,20 @@ class _AddPostScreenState extends State<AddPostScreen> {
       isLoading = true;
     });
 
-    String fileNamePickerCamera = basename(_image!.path);
-    final file = File(_image!.path);
-    final storageRef =
-        FirebaseStorage.instance.ref().child('posts/$fileNamePickerCamera');
-    uploadImageCamera = storageRef.putFile(file);
+    for (var i = 0; i < _imageFiles!.length; i++) {
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('images/${DateTime.now().toString()}-$i');
+      final file = File(_imageFiles![i].path);
 
-    final snapshot = await uploadImageCamera!.whenComplete(() {});
-    final urlDowload = await snapshot.ref.getDownloadURL();
-    print('Dowload Link : $urlDowload ');
-
+      await storageRef.putFile(File(file.path));
+      final url = await storageRef.getDownloadURL();
+      _downloadUrls.add(url);
+    }
     try {
       // upload to storage and db
       await _apiPostService
-          .addNewPost(_descriptionController.text, urlDowload, _toggledCheck,
+          .addNewPost(_descriptionController.text, _downloadUrls, _toggledCheck,
               postTypePost)
           .then((value) {
         setState(() {
@@ -133,7 +135,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   void clearImage() {
     setState(() {
-      _image = null;
+      _imageFiles = null;
     });
   }
 
@@ -145,7 +147,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _image == null
+    return _imageFiles == null
         ? Center(
             child: IconButton(
               icon: const Icon(
@@ -193,13 +195,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         height: 60.0,
                         width: 60.0,
                         child: ClipRRect(
-                          child: Image.file(
-                            _image!,
-                            width: 450,
-                            height: 450,
-                            fit: BoxFit.cover,
-                          ),
-                        )),
+                            child: Image.file(
+                          File(_imageFiles![0].path),
+                          width: 450,
+                          height: 450,
+                          fit: BoxFit.cover,
+                        ))),
                     SizedBox(
                       height: 60.0,
                       width: 300.0,
@@ -259,18 +260,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
               ],
             ),
           );
-  }
-
-  Future pickCamera(ImageSource source) async {
-    try {
-      final ImagePicker _imagePicker = ImagePicker();
-      final image = await _imagePicker.pickImage(source: source);
-      if (image == null) return;
-      final imageTpr = File(image.path);
-      setState(() => this._image = imageTpr);
-    } on PlatformException catch (e) {
-      print(e);
-    }
   }
 }
 

@@ -5,7 +5,7 @@
 
 
    <application
-        android:label="almira_front_end"
+        android:label="Almira"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
