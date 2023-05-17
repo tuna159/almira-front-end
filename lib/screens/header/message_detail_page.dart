@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
+import 'package:socket_io_client/socket_io_client.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class MessageDetailPage extends StatefulWidget {
   final String uid;
@@ -31,11 +33,58 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
   final TextEditingController _contentController = TextEditingController();
   ApiMessageService _apiMessageService = ApiMessageService();
   late List listOfMsImage;
+  List<dynamic> messages = [];
+  late IO.Socket socket;
+  var dataMessage;
 
   @override
   void initState() {
     super.initState();
     getUserData();
+    streamListener();
+  }
+
+  void streamListener() async {
+    String token = await getTokenFromSF();
+    var uid = decrypToken(token);
+    socket = IO.io(
+        'http://52.199.43.174:3009/api/v1',
+        OptionBuilder()
+            .setTransports(['websocket']) // for Flutter or Dart VM
+            .disableAutoConnect() // disable auto-connection
+            .setExtraHeaders({'foo': 'bar'}) // optional
+            .build());
+
+    // Kết nối thành công
+    socket.onConnect((_) {
+      print('Connected');
+    });
+
+    // Gửi request lấy danh sách tin nhắn
+    socket.emit('get_message_list', {'auth': uid, 'user_id': widget.uid});
+
+    // Nhận kết quả từ server
+    socket.on('message_list', (data) {
+      // print(data);
+      setState(() {
+        dataMessage = data;
+      });
+
+      print(1111);
+    });
+
+    // Kết nối thất bại
+    socket.onConnectError((_) {
+      print('Connect failed');
+    });
+
+    // Kết nối bị ngắt
+    socket.onDisconnect((_) {
+      print('Disconnected');
+    });
+
+    // Kết nối tới server
+    socket.connect();
   }
 
   void clearImage() {
@@ -144,6 +193,7 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
                     } else if (snapshot.hasData) {
                       final data = snapshot.data!;
                       final message = data["message_data"];
+                      // final message = dataMessage["message_data"];
                       return buildListMessageDetail(message);
                     } else {
                       return const Center(child: CircularProgressIndicator());
@@ -205,7 +255,18 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
                                   await _apiMessageService
                                       .addNewMessage(
                                           widget.uid, _contentController.text)
-                                      .then((value) {
+                                      .then((value) async {
+                                    String token = await getTokenFromSF();
+                                    var uid = decrypToken(token);
+                                    socket.emit('get_message_list',
+                                        {'auth': uid, 'user_id': widget.uid});
+                                    socket.on('message_list', (check) {
+                                      print(check);
+                                      print(1111111);
+                                      // setState(() {
+                                      //   messages = data;
+                                      // });
+                                    });
                                     setState(() {
                                       _contentController.text = "";
                                     });
@@ -303,7 +364,6 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
       itemBuilder: (context, index) {
         final messagedetail = listOfData[index];
         listOfMsImage = messagedetail["images"];
-        print(messagedetail["images"]);
         return Container(
           padding:
               const EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
@@ -319,12 +379,7 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
                       : Colors.grey.shade200),
                 ),
                 padding: const EdgeInsets.all(16),
-                child:
-                    // Text(
-                    //   messagedetail["content"],
-                    //   style: const TextStyle(fontSize: 15),
-                    // )
-                    Column(
+                child: Column(
                   children: <Widget>[
                     SizedBox(
                       width: 60,
@@ -340,30 +395,7 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
                       ),
                     )
                   ],
-                )
-
-                // child: _image == null
-                //     ? Text(
-                //         messagedetail["content"],
-                //         style: const TextStyle(fontSize: 15),
-                //       )
-                //     : Column(children: [
-                //         SizedBox(
-                //           height: 60,
-                //           width: 60,
-                //           child: messagedetail["images"].length == 0
-                //               ? Text(
-                //                   messagedetail["content"],
-                //                   style: const TextStyle(fontSize: 15),
-                //                 )
-                //               : Image.network(listOfMsImage[0]["image_url"]),
-                //         ),
-                //         Text(
-                //           messagedetail["content"],
-                //           style: const TextStyle(fontSize: 15),
-                //         ),
-                //       ]),
-                ),
+                )),
           ),
         );
       },
@@ -422,6 +454,20 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
     }
   }
 
+  void _sendMessage(String uid, String user_id) async {
+    socket.onConnect((_) {
+      print('Connected');
+      // Gửi request lấy danh sách tin nhắn
+      socket.emit('get_message_list', {'auth': uid, 'user_id': widget.uid});
+    });
+    socket.on('message_list', (data) {
+      print(data);
+      setState(() {
+        // messages.add(data);
+      });
+    });
+  }
+
   void sendMessageImage() async {
     String fileNamePickerCamera = basename(_image!.path);
     final file = File(_image!.path);
@@ -434,6 +480,8 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
     print('Dowload Link : $urlDowload ');
     try {
       {
+        String token = await getTokenFromSF();
+        var uid = decrypToken(token);
         await _apiMessageService
             .addNewMessageImage(widget.uid, _contentController.text, urlDowload)
             .then((value) {
@@ -441,6 +489,16 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
             _contentController.text = "";
             clearImage();
           });
+          print(1111111);
+          socket.emit('get_message_list', {'auth': uid, 'user_id': widget.uid});
+          socket.on('message_list', (check) {
+            print(check);
+            print(1111111);
+            // setState(() {
+            //   messages = data;
+            // });
+          });
+          // _sendMessage(uid, widget.uid);
         }).catchError((error) {
           ScaffoldMessenger.of(this.context)
               .showSnackBar(SnackBar(content: Text(error.toString())));
@@ -457,3 +515,27 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
     }
   }
 }
+
+
+ // Uri url = Uri.parse(
+    //     "ws://192.168.1.22:3009/api/v1/message/?users=16d2d0be-607b-4a4c-92d4-c862ed046898");
+    // var channel = IOWebSocketChannel.connect(url,
+    //     headers: {'Connection': 'upgrade', 'Upgrade': 'websocket'});
+
+    // channel.stream.listen((message) {
+    //   print(message);
+    // });
+    // Socket socket = io(
+    //     'http://localhost:3000',
+    //     OptionBuilder()
+    //         .setTransports(['websocket']) // for Flutter or Dart VM
+    //         .disableAutoConnect() // disable auto-connection
+    //         .setExtraHeaders({'foo': 'bar'}) // optional
+    //         .build());
+    // socket.connect();
+
+    // final channel = IOWebSocketChannel.connect(url, headers: {
+    //   'Connection': 'upgrade',
+    //   'Upgrade': 'websocket',
+    //   'Authorization': 'Bearer $token',
+    // });

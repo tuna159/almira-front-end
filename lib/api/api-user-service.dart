@@ -422,4 +422,25 @@ class ApiUserService {
       throw responseBody["error_message"];
     }
   }
+
+  Future recommendUser() async {
+    String token = await getTokenFromSF();
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': '*/*',
+      HttpHeaders.authorizationHeader: 'Bearer $token'
+    };
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/v1/me/recommend-friends'),
+      headers: headers,
+    );
+    var responseBody = jsonDecode(response.body);
+    if (responseBody['status_code'] == 200) {
+      return responseBody["data"];
+    } else {
+      throw responseBody["error_message"];
+    }
+  }
 }

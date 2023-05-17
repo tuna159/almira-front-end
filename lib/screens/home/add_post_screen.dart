@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:almira_front_end/api/api-post-service.dart';
 import 'package:almira_front_end/utils/colors.dart';
 import 'package:almira_front_end/utils/utils.dart';
-import 'package:dropdownfield2/dropdownfield2.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,13 +17,12 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
-  bool _toggledCheck = false;
+  final bool _toggledCheck = false;
   List<XFile>? _imageFiles;
-  List<String> _downloadUrls = [];
+  final List<String> _downloadUrls = [];
   bool isLoading = false;
-  ApiPostService _apiPostService = ApiPostService();
+  final ApiPostService _apiPostService = ApiPostService();
   int postTypePost = 0;
-  final url = '';
 
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController postType = TextEditingController();
@@ -56,6 +54,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 child: const Text('Choose from Gallery'),
                 onPressed: () async {
                   final pickedFiles = await ImagePicker().pickMultiImage();
+
                   setState(() {
                     _imageFiles = pickedFiles;
                   });

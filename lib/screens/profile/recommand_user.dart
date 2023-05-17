@@ -11,33 +11,11 @@ class RecommandUser extends StatefulWidget {
   State<RecommandUser> createState() => _RecommandUserState();
 }
 
-class User {
-  final String avatar;
-  final String name;
-
-  User({required this.name, required this.avatar});
-}
-
 class _RecommandUserState extends State<RecommandUser> {
   @override
   void initState() {
     super.initState();
   }
-
-  final List<User> users = [
-    User(
-        avatar:
-            'https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg',
-        name: 'anhtran1'),
-    User(
-        avatar:
-            'https://img6.thuthuatphanmem.vn/uploads/2022/11/18/anh-avatar-don-gian-ma-dep_081757969.jpg',
-        name: 'hong_vunb'),
-    User(
-        avatar:
-            "https://i0.wp.com/thatnhucuocsong.com.vn/wp-content/uploads/2023/02/Hinh-anh-avatar-Facebook.jpg?ssl\u003d1",
-        name: 'king_boy'),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -52,51 +30,66 @@ class _RecommandUserState extends State<RecommandUser> {
           },
         ),
       ),
-      body: ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-            ),
-            child: Column(
-              children: [
-                Container(
+      body: FutureBuilder(
+        future: ApiUserService().recommendUser(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Something went wrong! $snapshot");
+          } else if (snapshot.hasData) {
+            final recommendUser = snapshot.data!;
+            return ListView.builder(
+              itemCount: recommendUser.length,
+              itemBuilder: (context, index) {
+                final users = recommendUser[index];
+                return Container(
                   padding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                    horizontal: 16,
-                  ).copyWith(right: 8),
-                  child: Row(
+                    vertical: 10,
+                  ),
+                  child: Column(
                     children: [
-                      GestureDetector(
-                        onTap: (() {}),
-                        child: CircleAvatar(
-                          radius: 25,
-                          backgroundImage: NetworkImage(users[index].avatar),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 4,
+                          horizontal: 16,
+                        ).copyWith(right: 8),
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: (() {}),
+                              child: CircleAvatar(
+                                radius: 25,
+                                backgroundImage: NetworkImage(users["avatar"]),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            SizedBox(
+                              width: 150,
+                              child: Text(users["nick_name"]),
+                            ),
+                            CustomButton(
+                              text: 'Follow',
+                              backgroundColor: defaultColor,
+                              textColor: Colors.white,
+                              borderColor: Colors.black,
+                              function: () async {
+                                await ApiUserService()
+                                    .followUser(users["user_id"]);
+                                setState(() {});
+                              },
+                            )
+                          ],
                         ),
                       ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      SizedBox(
-                        width: 150,
-                        child: Text(users[index].name),
-                      ),
-                      CustomButton(
-                        text: 'Follow',
-                        backgroundColor: defaultColor,
-                        textColor: Colors.white,
-                        borderColor: Colors.black,
-                        function: () async {
-                          setState(() {});
-                        },
-                      )
                     ],
                   ),
-                ),
-              ],
-            ),
-          );
+                );
+              },
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
         },
       ),
     );
