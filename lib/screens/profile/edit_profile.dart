@@ -78,7 +78,7 @@ class _EditProfileState extends State<EditProfile> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_outlined),
           onPressed: () {
-            Navigator.pop(context, "refresh");
+            Navigator.pop(context, true);
           },
         ),
         actions: <Widget>[
@@ -158,7 +158,6 @@ class _EditProfileState extends State<EditProfile> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     child: TextFormField(
-                      validator: utils.requiredFieldUserName,
                       controller: infomationController,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: const InputDecoration(
@@ -209,8 +208,14 @@ class _EditProfileState extends State<EditProfile> {
       try {
         await _apiUserService
             .updateMe(infomationController.text, userNameController.text, url)
-            .then((user) {})
-            .catchError((error) {
+            .then((value) async {
+          setState(() {
+            isLoading = false;
+          });
+
+          ScaffoldMessenger.of(this.context).showSnackBar(
+              const SnackBar(content: Text('Successful update profile')));
+        }).catchError((error) {
           ScaffoldMessenger.of(this.context)
               .showSnackBar(SnackBar(content: Text(error.toString())));
         });

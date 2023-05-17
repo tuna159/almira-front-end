@@ -294,10 +294,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                 userName: snap[
                                                                     "user_name"],
                                                                 introduction: snap[
-                                                                    "introduction"])));
-                                                    if (refresh == "refresh") {
-                                                      setState(() {});
-                                                    }
+                                                                    "introduction"]))).then(
+                                                        (val) => val
+                                                            ? getUserData()
+                                                            : null);
                                                   },
                                                 )
                                               : isFollowing

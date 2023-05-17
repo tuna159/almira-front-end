@@ -21,7 +21,7 @@ class _RecommandUserState extends State<RecommandUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Recommand User'),
+        title: const Text('Recommend User'),
         backgroundColor: defaultColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_outlined),
