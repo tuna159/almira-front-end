@@ -117,8 +117,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (snapshot.data! == false) {
                           return PopupMenuButton<MenuItems>(
                             onSelected: (value) async {
-                              if (value == MenuItems.itemLogout) {
+                              if (value == MenuItems.itemBlock) {
                                 showMyDialogBlockUser();
+                              } else if (value == MenuItems.itemUnblock) {
+                                showMyDialogUnBlockUser();
                               }
                             },
                             itemBuilder: (context) => [
@@ -508,6 +510,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {});
   }
 
+  void unBlockUser() async {
+    await ApiUserService().unBlockUser(widget.uid).then((value) async {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successful unBlock user')));
+    }).catchError((error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.toString())));
+    });
+    setState(() {});
+  }
+
   Future<void> showMyDialogBlockUser() async {
     return showDialog<void>(
       context: context,
@@ -520,6 +534,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
           actions: <Widget>[
             TextButton(
                 onPressed: blockUser,
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(color: Colors.green),
+                )),
+            TextButton(
+              child: const Text('No', style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> showMyDialogUnBlockUser() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm '),
+          // ignore: prefer_interpolation_to_compose_strings
+          content: Text('Do you want unblock user'),
+          actions: <Widget>[
+            TextButton(
+                onPressed: unBlockUser,
                 child: const Text(
                   'Yes',
                   style: TextStyle(color: Colors.green),

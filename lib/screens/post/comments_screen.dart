@@ -121,10 +121,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
         final commentIndex = listOfDataComments[index];
 
         return Slidable(
-          // startActionPane: ActionPane(
-          //   motion: const StretchMotion(),
-          //   children: [SlidableAction(onPressed: (context) {})],
-          // ),
           endActionPane: ActionPane(
             motion: const BehindMotion(),
             children: [
